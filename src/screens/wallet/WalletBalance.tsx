@@ -1,4 +1,4 @@
-import { View, ScrollView } from "react-native";
+import { View, ScrollView, TextInput, TouchableOpacity } from "react-native";
 import BaseText from "../../components/BaseText";
 import PageContainer from "../../components/PageContainer";
 import Header from "../../components/texts/header";
@@ -12,8 +12,12 @@ import MaterialErrorComponent from "../../components/errors/ErrorComp";
 import PageLoader from "../../components/Loader";
 import { FlashList } from "@shopify/flash-list";
 import { useGetUserQuery } from "../../state/features/services/users/user";
-import { useState } from "react";
+import { memo, useRef, useState } from "react";
 import PrimaryButton from "../../components/buttons/PrimaryButtom";
+import InputText from "../../components/inputs/InputText";
+import Feather from "@expo/vector-icons/Feather";
+import InputTextWithLabel from "../../components/inputs/InputWithLabel";
+import icons from "../../utils/constants/icons";
 interface Transaction {
   id: number;
   individualId: string;
@@ -82,6 +86,8 @@ export default function WalletBalance() {
   const userType = "individual";
   const accountType = user?.data?.data?.accountType || "individual";
   const limit = 10;
+  const temp = useRef("");
+  const [searchTerm, setSearchTerm] = useState("");
   const query = useQuery<API_RESPONSE>({
     queryKey: ["transactions", accountType, userType, currentPage],
     queryFn: async () => {
@@ -101,6 +107,7 @@ export default function WalletBalance() {
         "/api/memberships-subscriptions/get/transactions",
         {
           params: {
+            searchParam: searchTerm,
             page: currentPage,
             limit: limit,
           },
@@ -109,6 +116,44 @@ export default function WalletBalance() {
       return resp.data;
     },
   });
+  const HeaderComponent = () => {
+    if (accountType.toLowerCase() == "individual") return null;
+    return (
+      <View style={tw`flex flex-row items-center gap-2 mb-4`}>
+        <View style={tw`flex-1`}>
+          {/*<BaseText>{accountType}</BaseText>*/}
+          <InputText
+            onChangeText={(e) => {}}
+            icon={icons.search}
+            placeholder="Search"
+            style={tw`border border-[#484848] rounded-[10px] h-[36px]`}
+          />
+          {/*<TextInput />*/}
+        </View>
+        <TouchableOpacity
+          style={tw`bg-primary rounded-[10px] p-2`}
+          onPress={() => {
+            if (!temp.current.trim()) {
+              return;
+            }
+            setSearchTerm(temp.current);
+          }}
+        >
+          <Feather name="search" size={18} color="white" />
+        </TouchableOpacity>
+        {/*<TouchableOpacity
+          style={tw`bg-red-500 rounded-[10px] p-2`}
+          onPress={() => {
+            temp.current = "";
+            setSearchTerm("");
+          }}
+        >
+          <Feather name="x" size={18} color="white" />
+        </TouchableOpacity>*/}
+      </View>
+    );
+  };
+
   if (query.isError)
     return (
       <PageContainer>
@@ -122,6 +167,12 @@ export default function WalletBalance() {
       </PageContainer>
     );
   console.log(JSON.stringify(query.data?.data[0]));
+
+  // return (
+  //   <PageContainer>
+  //     <HeaderComponent />
+  //   </PageContainer>
+  // );
   return (
     <PageContainer padding={0}>
       <View
@@ -140,6 +191,7 @@ export default function WalletBalance() {
           renderItem={({ index, item }) => {
             return <TransactionItem transaction={item} key={item.id} />;
           }}
+          ListHeaderComponent={HeaderComponent}
           ListFooterComponent={() => (
             <View
               style={tw`py-6 flex flex-row items-center justify-center gap-4`}
