@@ -16,6 +16,7 @@ import InputTextWithLabel from "../../components/inputs/InputWithLabel";
 import BackButton from "../../components/BackButton";
 import Header from "../../components/texts/header";
 import PrimaryButton from "../../components/buttons/PrimaryButtom";
+import BaseText from "../../components/BaseText";
 
 export default function ScanTicket({ navigation }: any) {
   const [facing, setFacing] = useState<CameraType>("back");
@@ -62,12 +63,14 @@ export default function ScanTicket({ navigation }: any) {
   if (!permission.granted) {
     // Camera permissions are not granted yet.
     return (
-      <View style={styles.container}>
-        <Text style={styles.message}>
-          We need your permission to show the camera
-        </Text>
-        <Button onPress={requestPermission} title="grant permission" />
-      </View>
+      <PageContainer>
+        <View style={styles.container}>
+          <BaseText style={styles.message}>
+            We need your permission to show the camera
+          </BaseText>
+          <Button onPress={requestPermission} title="grant permission" />
+        </View>
+      </PageContainer>
     );
   }
 
