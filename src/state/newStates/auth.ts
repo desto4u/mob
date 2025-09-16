@@ -28,9 +28,14 @@ export interface AuthObject {
   updatedAt: string;
 }
 
+interface AuthReponse {
+  code: number;
+  message: string;
+  data: AuthObject;
+}
 interface TokenStore {
   value: string;
-  userObject?: AuthObject;
+  userObject?: AuthReponse;
   setValue: (newValue: string) => void;
   getValue: () => string;
   setAccount: (data: any) => void;

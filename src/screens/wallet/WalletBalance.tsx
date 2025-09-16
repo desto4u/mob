@@ -18,6 +18,7 @@ import InputText from "../../components/inputs/InputText";
 import Feather from "@expo/vector-icons/Feather";
 import InputTextWithLabel from "../../components/inputs/InputWithLabel";
 import icons from "../../utils/constants/icons";
+import { useTokenStore } from "../../state/newStates/auth";
 interface Transaction {
   id: number;
   individualId: string;
@@ -83,15 +84,15 @@ export default function WalletBalance() {
   let nav = useNavigation();
   const user = useGetUserQuery();
   const [currentPage, setCurrentPage] = useState(1);
-  const userType = "individual";
-  const accountType = user?.data?.data?.accountType || "individual";
+  const acct = useTokenStore((state) => state.userObject?.data.accountType);
   const limit = 10;
   const temp = useRef("");
   const [searchTerm, setSearchTerm] = useState("");
   const query = useQuery<API_RESPONSE>({
-    queryKey: ["transactions", accountType, userType, currentPage],
+    queryKey: ["transactions", acct, currentPage],
     queryFn: async () => {
-      if (userType === "individual") {
+      if (acct == "individual") {
+        console.log(acct);
         let resp = await newApi.get(
           "/api/memberships-subscriptions/get/individual/transactions",
           {
@@ -103,6 +104,7 @@ export default function WalletBalance() {
         );
         return resp.data;
       }
+      console.log("passed");
       let resp = await newApi.get(
         "/api/memberships-subscriptions/get/transactions",
         {
@@ -117,7 +119,7 @@ export default function WalletBalance() {
     },
   });
   const HeaderComponent = () => {
-    if (accountType.toLowerCase() == "individual") return null;
+    if (acct.toLowerCase() == "individual") return null;
     return (
       <View style={tw`flex flex-row items-center gap-2 mb-4`}>
         <View style={tw`flex-1`}>
@@ -153,10 +155,15 @@ export default function WalletBalance() {
       </View>
     );
   };
-
+  // return (
+  //   <PageContainer>
+  //     <BaseText>{JSON.stringify(acct)}</BaseText>
+  //   </PageContainer>
+  // );
   if (query.isError)
     return (
       <PageContainer>
+        {/*<BaseText>{JSON.stringify(query.error.response.data.message)}</BaseText>*/}
         <MaterialErrorComponent backButton></MaterialErrorComponent>
       </PageContainer>
     );
