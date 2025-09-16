@@ -75,11 +75,12 @@ const ViewEventVerifiers = ({ navigation, route }: any) => {
       refetch();
     },
     onError: (error) => {
+      console.log("Error updating status:", error.response.data);
+
       Toast.show({
         type: "error",
         text1: error?.response?.data.message || "An error occurred",
       });
-      console.log("Error updating status:", error);
     },
   });
 
@@ -89,9 +90,9 @@ const ViewEventVerifiers = ({ navigation, route }: any) => {
   const [updateStatus, { isLoading: isUpdating }] =
     useUpdateVerificationStatusMutation();
 
-  useEffect(() => {
-    console.log(isFetching, isError, error);
-  }, [isFetching, isError, error]);
+  // useEffect(() => {
+  //   console.log(isFetching, isError, error);
+  // }, [isFetching, isError, error]);
   if (isFetching) return <PageLoader />;
   const onRefresh = async () => {
     setRefreshing(true);
