@@ -106,7 +106,7 @@ export default function WalletBalance() {
       }
       console.log("passed");
       let resp = await newApi.get(
-        "/api/memberships-subscriptions/get/transactions",
+        "/api/memberships-subscriptions/get/organization/transactions",
         {
           params: {
             searchParam: searchTerm,
