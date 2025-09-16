@@ -11,6 +11,7 @@ import { newApi } from "../../state/newStates/flow";
 import MaterialErrorComponent from "../../components/errors/ErrorComp";
 import PageLoader from "../../components/Loader";
 import { FlashList } from "@shopify/flash-list";
+import { useGetUserQuery } from "../../state/features/services/users/user";
 interface Transaction {
   id: number;
   individualId: string;
@@ -74,9 +75,26 @@ interface API_RESPONSE {
 }
 export default function WalletBalance() {
   let nav = useNavigation();
+  const user = useGetUserQuery();
+
+  const userType = "individual";
+  const accountType = user?.data?.data?.accountType || "individual";
+  // return (
+  //   <>
+  //     <PageContainer>
+  //       <BaseText>{JSON.stringify(user?.data?.data?.accountType)}</BaseText>
+  //     </PageContainer>
+  //   </>
+  // )
   const query = useQuery<API_RESPONSE>({
-    queryKey: ["transactions"],
+    queryKey: ["transactions", accountType, userType],
     queryFn: async () => {
+      if (userType === "individual") {
+        let resp = await newApi.get(
+          "/api/memberships-subscriptions/get/individual/transactions",
+        );
+        return resp.data;
+      }
       let resp = await newApi.get(
         "/api/memberships-subscriptions/get/transactions",
       );
