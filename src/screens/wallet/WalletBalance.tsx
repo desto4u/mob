@@ -82,14 +82,13 @@ interface API_RESPONSE {
 }
 export default function WalletBalance() {
   let nav = useNavigation();
-  const user = useGetUserQuery();
   const [currentPage, setCurrentPage] = useState(1);
   const acct = useTokenStore((state) => state.userObject?.data.accountType);
   const limit = 10;
   const temp = useRef("");
   const [searchTerm, setSearchTerm] = useState("");
   const query = useQuery<API_RESPONSE>({
-    queryKey: ["transactions", acct, currentPage],
+    queryKey: ["transactions", acct, currentPage, searchTerm],
     queryFn: async () => {
       if (acct == "individual") {
         console.log(acct);
@@ -106,7 +105,7 @@ export default function WalletBalance() {
       }
       console.log("passed");
       let resp = await newApi.get(
-        "/api/memberships-subscriptions/get/organization/transactions",
+        "/api/memberships-subscriptions/get/organization/transactions/search",
         {
           params: {
             searchParam: searchTerm,
@@ -125,8 +124,11 @@ export default function WalletBalance() {
         <View style={tw`flex-1`}>
           {/*<BaseText>{accountType}</BaseText>*/}
           <InputText
-            onChangeText={(e) => {}}
+            onChangeText={(e) => {
+              temp.current = e;
+            }}
             icon={icons.search}
+            defaultValue={searchTerm}
             placeholder="Search"
             style={tw`border border-[#484848] rounded-[10px] h-[36px]`}
           />
@@ -138,12 +140,15 @@ export default function WalletBalance() {
             if (!temp.current.trim()) {
               return;
             }
+            // console.log(temp.current);
             setSearchTerm(temp.current);
           }}
         >
-          <Feather name="search" size={18} color="white" />
+          <BaseText>
+            <Feather name="search" size={18} color="white" />
+          </BaseText>
         </TouchableOpacity>
-        {/*<TouchableOpacity
+        <TouchableOpacity
           style={tw`bg-red-500 rounded-[10px] p-2`}
           onPress={() => {
             temp.current = "";
@@ -151,7 +156,7 @@ export default function WalletBalance() {
           }}
         >
           <Feather name="x" size={18} color="white" />
-        </TouchableOpacity>*/}
+        </TouchableOpacity>
       </View>
     );
   };
@@ -164,10 +169,14 @@ export default function WalletBalance() {
     return (
       <PageContainer>
         {/*<BaseText>{JSON.stringify(query.error.response.data.message)}</BaseText>*/}
-        <MaterialErrorComponent backButton></MaterialErrorComponent>
+        <MaterialErrorComponent
+          //@ts-ignore
+          message={query?.error?.response?.data?.message}
+          backButton
+        ></MaterialErrorComponent>
       </PageContainer>
     );
-  if (query.isLoading)
+  if (query.isFetching)
     return (
       <PageContainer>
         <PageLoader />
@@ -191,7 +200,7 @@ export default function WalletBalance() {
         {/* Balance Card */}
       </View>
       <View style={tw`p-4 px-0 flex-1`}>
-        {/* <BaseText>History here</BaseText> */}
+        {/*<BaseText>{searchTerm}sss</BaseText>*/}
         <FlashList
           contentContainerStyle={tw`px-3`}
           data={query.data?.data}

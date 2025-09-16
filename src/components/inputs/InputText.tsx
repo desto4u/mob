@@ -35,6 +35,7 @@ interface IInputText {
   onPress?: () => void;
   editable?: boolean;
   keyboardType?: KeyboardTypeOptions;
+  defaultValue?: string;
 }
 
 const InputText: FC<IInputText> = (props) => {
@@ -55,6 +56,7 @@ const InputText: FC<IInputText> = (props) => {
     onPress,
     iconRight,
     editable,
+    defaultValue,
   } = props;
 
   const [isPasswordVisible, setIsPasswordVisible] = useState<boolean>(false);
@@ -78,6 +80,7 @@ const InputText: FC<IInputText> = (props) => {
         )}
 
         <TextInput
+          defaultValue={defaultValue}
           placeholder={placeholder ? placeholder : "Enter text"}
           style={[styles.inputText, tw`text-black dark:text-white text-base`]}
           placeholderTextColor={colorScheme == "dark" ? "white" : colors.black}
