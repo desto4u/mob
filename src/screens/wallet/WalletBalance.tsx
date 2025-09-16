@@ -12,6 +12,8 @@ import MaterialErrorComponent from "../../components/errors/ErrorComp";
 import PageLoader from "../../components/Loader";
 import { FlashList } from "@shopify/flash-list";
 import { useGetUserQuery } from "../../state/features/services/users/user";
+import { useState } from "react";
+import PrimaryButton from "../../components/buttons/PrimaryButtom";
 interface Transaction {
   id: number;
   individualId: string;
@@ -76,27 +78,33 @@ interface API_RESPONSE {
 export default function WalletBalance() {
   let nav = useNavigation();
   const user = useGetUserQuery();
-
+  const [currentPage, setCurrentPage] = useState(1);
   const userType = "individual";
   const accountType = user?.data?.data?.accountType || "individual";
-  // return (
-  //   <>
-  //     <PageContainer>
-  //       <BaseText>{JSON.stringify(user?.data?.data?.accountType)}</BaseText>
-  //     </PageContainer>
-  //   </>
-  // )
+  const limit = 10;
   const query = useQuery<API_RESPONSE>({
-    queryKey: ["transactions", accountType, userType],
+    queryKey: ["transactions", accountType, userType, currentPage],
     queryFn: async () => {
       if (userType === "individual") {
         let resp = await newApi.get(
           "/api/memberships-subscriptions/get/individual/transactions",
+          {
+            params: {
+              page: currentPage,
+              limit: limit,
+            },
+          },
         );
         return resp.data;
       }
       let resp = await newApi.get(
         "/api/memberships-subscriptions/get/transactions",
+        {
+          params: {
+            page: currentPage,
+            limit: limit,
+          },
+        },
       );
       return resp.data;
     },
@@ -107,7 +115,7 @@ export default function WalletBalance() {
         <MaterialErrorComponent backButton></MaterialErrorComponent>
       </PageContainer>
     );
-  if (query.isFetching)
+  if (query.isLoading)
     return (
       <PageContainer>
         <PageLoader />
@@ -132,6 +140,43 @@ export default function WalletBalance() {
           renderItem={({ index, item }) => {
             return <TransactionItem transaction={item} key={item.id} />;
           }}
+          ListFooterComponent={() => (
+            <View
+              style={tw`py-6 flex flex-row items-center justify-center gap-4`}
+            >
+              <PrimaryButton
+                style={tw`px-4 py-1`}
+                onPress={() => {
+                  if (currentPage > 2) {
+                    setCurrentPage(currentPage - 1);
+                  }
+                }}
+              >
+                <BaseText
+                  style={tw`text-xl  font-medium text-blue- bg dark:text-blue-400 capitalize`}
+                >
+                  -
+                </BaseText>
+              </PrimaryButton>
+              <BaseText style={tw`text-center text-gray-500`}>
+                Page: {currentPage}
+              </BaseText>
+              <PrimaryButton
+                style={tw`px-4 py-1`}
+                onPress={() => {
+                  if (query.data?.data?.length == limit) {
+                    setCurrentPage(currentPage + 1);
+                  }
+                }}
+              >
+                <BaseText
+                  style={tw`text-xl font-medium text-blue- bg dark:text-blue-400 capitalize`}
+                >
+                  +
+                </BaseText>
+              </PrimaryButton>
+            </View>
+          )}
         ></FlashList>
       </View>
     </PageContainer>
@@ -174,6 +219,7 @@ const TransactionItem = ({ transaction }: { transaction: Transaction }) => {
             <View
               style={tw`bg-blue-50 dark:bg-blue-900/30 px-3 py-1 rounded-full`}
             >
+              {/*<View style={tw``}></View>*/}
               <BaseText
                 style={tw`text-xs font-medium text-blue-600 dark:text-blue-400 capitalize`}
               >
