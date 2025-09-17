@@ -6,7 +6,7 @@ import {
   Text,
   View,
 } from "react-native";
-import React, { useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { colors } from "../../utils/constants";
 import TextPrimary from "../texts/text";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
@@ -22,12 +22,13 @@ import icons from "../../utils/constants/icons";
 import moment from "moment";
 import { useNavigation } from "@react-navigation/native";
 import { newApi } from "../../state/newStates/flow";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { Paystack, paystackProps } from "react-native-paystack-webview";
 import { useTokenStore } from "../../state/newStates/auth";
 import { useGetPaymentGatewayQuery } from "../../state/features/services/users/user";
 import Toast from "react-native-toast-message";
 import { AxiosError, AxiosRequestHeaders, AxiosResponseHeaders } from "axios";
+import BaseText from "../BaseText";
 
 // interface ItemProps {
 //   item?: any;
@@ -193,12 +194,54 @@ const EventInvitesItem = ({ item, refetch }: ItemProps) => {
   const paystackWebViewRef = useRef<paystackProps.PayStackRef>(null);
   const payStack = gateWay?.data?.publicKey || gateWay?.data?.data?.publicKey;
   const user = useTokenStore((state) => state.userObject?.data);
+  interface Subaccount {
+    accountNumber: string;
+    active: boolean;
+    businessName: string;
+    createdAt: string;
+    id: string;
+    percentageCharge: number;
+    settlementBank: string;
+    subaccountCode: string;
+    updatedAt: string;
+    userId: string;
+  }
+  interface SubaccountResponse {
+    data: Subaccount;
+    error: string | null;
+    loading: boolean;
+  }
+  const subaccount_query = useQuery<SubaccountResponse>({
+    queryKey: ["subaccount", item.id, item.userId],
+    queryFn: async () => {
+      let resp = await newApi.get(`/api/users/payment-gateway/${item.userId}`);
+      return resp.data;
+      // Fetch subaccount data here
+    },
+  });
+  const subaccount = subaccount_query.data?.data?.subaccountCode;
+  // useEffect(() => {
+  //   console.log(subaccount_query.data);
+  // }, [subaccount_query.isFetching]);
+  // return (
+  //   <>
+  //     <BaseText>
+  //       {JSON.stringify({
+  //         // data: user,
+  //         subaccount_query: subaccount_query.data,
+  //         isFetching: subaccount_query.isFetching,
+  //         isError: subaccount_query.isError,
+  //       })}
+  //     </BaseText>
+  //   </>
+  // );
   return (
     <View style={[tw` p-3  rounded-[10px] dark:bg-gray_dark bg-light`]}>
       <Paystack
         paystackKey={payStack}
         amount={item.eventtickets.price}
         billingEmail={user?.email as string}
+        subaccount={subaccount}
         activityIndicatorColor="green"
         channels={["bank", "card", "ussd"]}
         onLoad={() => console.log("Paystack WebView loaded")}
