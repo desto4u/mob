@@ -171,23 +171,7 @@ export default function WalletBalance() {
       </View>
     );
   };
-  // return (
-  //   <PageContainer>
-  //     <BaseText>{JSON.stringify(acct)}</BaseText>
-  //   </PageContainer>
-  // );
-  if (query.isError)
-    return (
-      <PageContainer>
-        {/*<BaseText>{JSON.stringify(query.error.response.data.message)}</BaseText>*/}
-        <MaterialErrorComponent
-          //@ts-ignore
-          message={query?.error?.response?.data?.message}
-          backButton
-          onRetry={query.refetch}
-        ></MaterialErrorComponent>
-      </PageContainer>
-    );
+
   if (query.isFetching)
     return (
       <PageContainer>
@@ -213,51 +197,63 @@ export default function WalletBalance() {
       </View>
       <View style={tw`p-4 px-0 flex-1`}>
         {/*<BaseText>{searchTerm}sss</BaseText>*/}
-        <FlashList
-          contentContainerStyle={tw`px-3`}
-          data={query.data?.data}
-          renderItem={({ index, item }) => {
-            return <TransactionItem transaction={item} key={item.id} />;
-          }}
-          ListHeaderComponent={HeaderComponent}
-          ListFooterComponent={() => (
-            <View
-              style={tw`py-6 flex flex-row items-center justify-center gap-4`}
-            >
-              <PrimaryButton
-                style={tw`px-4 py-1`}
-                onPress={() => {
-                  if (currentPage > 2) {
-                    setCurrentPage(currentPage - 1);
-                  }
-                }}
+        {query.isError && <HeaderComponent />}
+        {!query.isError && (
+          <FlashList
+            contentContainerStyle={tw`px-3`}
+            data={query.data?.data}
+            renderItem={({ index, item }) => {
+              return <TransactionItem transaction={item} key={item.id} />;
+            }}
+            ListHeaderComponent={HeaderComponent}
+            ListFooterComponent={() => (
+              <View
+                style={tw`py-6 flex flex-row items-center justify-center gap-4`}
               >
-                <BaseText
-                  style={tw`text-xl  font-medium text-blue- bg dark:text-blue-400 capitalize`}
+                <PrimaryButton
+                  style={tw`px-4 py-1`}
+                  onPress={() => {
+                    if (currentPage > 2) {
+                      setCurrentPage(currentPage - 1);
+                    }
+                  }}
                 >
-                  -
+                  <BaseText
+                    style={tw`text-xl  font-medium text-blue- bg dark:text-blue-400 capitalize`}
+                  >
+                    -
+                  </BaseText>
+                </PrimaryButton>
+                <BaseText style={tw`text-center text-gray-500`}>
+                  Page: {currentPage}
                 </BaseText>
-              </PrimaryButton>
-              <BaseText style={tw`text-center text-gray-500`}>
-                Page: {currentPage}
-              </BaseText>
-              <PrimaryButton
-                style={tw`px-4 py-1`}
-                onPress={() => {
-                  if (query.data?.data?.length == limit) {
-                    setCurrentPage(currentPage + 1);
-                  }
-                }}
-              >
-                <BaseText
-                  style={tw`text-xl font-medium text-blue- bg dark:text-blue-400 capitalize`}
+                <PrimaryButton
+                  style={tw`px-4 py-1`}
+                  onPress={() => {
+                    if (query.data?.data?.length == limit) {
+                      setCurrentPage(currentPage + 1);
+                    }
+                  }}
                 >
-                  +
-                </BaseText>
-              </PrimaryButton>
-            </View>
-          )}
-        ></FlashList>
+                  <BaseText
+                    style={tw`text-xl font-medium text-blue- bg dark:text-blue-400 capitalize`}
+                  >
+                    +
+                  </BaseText>
+                </PrimaryButton>
+              </View>
+            )}
+          ></FlashList>
+        )}
+
+        {query.isError && (
+          <MaterialErrorComponent
+            //@ts-ignore
+            message={query?.error?.response?.data?.message}
+            // backButton
+            onRetry={query.refetch}
+          ></MaterialErrorComponent>
+        )}
       </View>
     </PageContainer>
   );
