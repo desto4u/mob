@@ -103,7 +103,18 @@ export default function WalletBalance() {
         );
         return resp.data;
       }
-      console.log("passed");
+      if (!searchTerm.trim()) {
+        let resp = await newApi.get(
+          "/api/memberships-subscriptions/get/organization/transactions",
+          {
+            params: {
+              page: currentPage,
+              limit: limit,
+            },
+          },
+        );
+        return resp.data;
+      }
       let resp = await newApi.get(
         "/api/memberships-subscriptions/get/organization/transactions/search",
         {
@@ -173,6 +184,7 @@ export default function WalletBalance() {
           //@ts-ignore
           message={query?.error?.response?.data?.message}
           backButton
+          onRetry={query.refetch}
         ></MaterialErrorComponent>
       </PageContainer>
     );

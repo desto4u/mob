@@ -80,7 +80,7 @@ export default function DesignationItem({
           style={tw`bg-red-500 px-4 py-2`}
           onPress={async () => {
             try {
-              console.log(id);
+              console.log(id, "id");
               let resp = await newApi.delete(
                 `/api/memberships-subscriptions/designation/delete?id=${id}`,
               );
