@@ -41,7 +41,7 @@ const EventInvites = ({ navigation }: any) => {
 
   const receivedInvite = data?.data;
 
-  console.log("receivedInvite", receivedInvite);
+  console.log("receivedInvitse", receivedInvite);
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -105,7 +105,6 @@ const EventInvites = ({ navigation }: any) => {
     }
   };
 
-  console.log("receivedInvite", receivedInvite);
   return (
     <PageContainer>
       <SafeAreaView style={{ flex: 1 }}>
@@ -129,10 +128,7 @@ const EventInvites = ({ navigation }: any) => {
                   <EventInvitesItem
                     navigation={navigation}
                     item={item}
-                    isAccepting={isAccepting}
-                    isDeclining={isDeclining}
-                    handleAccept={handleAccept}
-                    handleDecline={handleDecline}
+                    refetch={refetch}
                   />
                 </View>
               )}

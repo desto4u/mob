@@ -38,13 +38,13 @@ const ManageVerifiers = ({ navigation }) => {
   const insets = useSafeAreaInsets();
   const [filterModal, setFilterModal] = useState(false);
   const [tab, setTab] = useState<"received" | "initiated">("received");
-  // const toggleFilterModal = () => setFilterModal(!filterModal);
-  // const [filterData, setfilterData] = useState({
-  //   active: false,
-  //   inActive: false,
-  //   me: false,
-  //   organization: false,
-  // });
+  const toggleFilterModal = () => setFilterModal(!filterModal);
+  const [filterData, setfilterData] = useState({
+    active: false,
+    inActive: false,
+    me: false,
+    organization: false,
+  });
 
   const handleFilterChange = (field: string) => {
     setfilterData({ ...filterData, [field]: !filterData[field] });
@@ -168,7 +168,7 @@ const ManageVerifiers = ({ navigation }) => {
           ) : null}
         </View>
       </PageContainer>
-      {/* <BottomModals open={filterModal} handleClose={toggleFilterModal}>
+      <BottomModals open={filterModal} handleClose={toggleFilterModal}>
         <View
           style={tw`flex-row justify-between items-center p-5 border-b border-[#848383]`}
         >
@@ -250,7 +250,7 @@ const ManageVerifiers = ({ navigation }) => {
             Search
           </PrimaryButton>
         </View>
-      </BottomModals> */}
+      </BottomModals>
     </>
   );
 };
