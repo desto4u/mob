@@ -38,13 +38,13 @@ const membershipApi = api.injectEndpoints({
       },
       invalidatesTags: ["Organization", "Membership", "Org_Membership"],
     }),
-    deleteMemberInvite: builder.mutation<any, {requestId: string}>({
-      query: ({requestId}) => {
+    deleteMemberInvite: builder.mutation<any, { requestId: string }>({
+      query: ({ requestId }) => {
         // console.log('Data being sent to API:', data); // Log the data here
         return {
           url: `/memberships-subscriptions/organization/membership/pending/delete`,
           method: "DELETE",
-          params: {requestId},
+          params: { requestId },
         };
       },
       invalidatesTags: ["Organization", "Membership", "Org_Membership"],
