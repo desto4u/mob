@@ -132,6 +132,12 @@ export default function EditMember({ navigation, route }: any) {
       };
     });
   designations_data?.push(initial_designation);
+
+  // return (
+  //   <PageContainer>
+  //     <BaseText>{JSON.stringify(member)}</BaseText>
+  //   </PageContainer>
+  // );
   return (
     <>
       <PageContainer padding="0%">

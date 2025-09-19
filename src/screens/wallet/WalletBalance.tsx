@@ -130,7 +130,9 @@ export default function WalletBalance() {
     },
   });
   const HeaderComponent = () => {
-    if (acct.toLowerCase() == "individual") return null;
+    if (acct?.toLowerCase() == "individual") {
+      return null;
+    }
     return (
       <View style={tw`flex flex-row items-center gap-2 mb-4`}>
         <View style={tw`flex-1`}>

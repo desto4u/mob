@@ -52,7 +52,7 @@ const InvitationListing = ({ navigation, eventId }: any) => {
   console.log(eventDetails?.eventtickets);
 
   const handleSubmit = async () => {
-    // console.log(eventDetails);
+    // return console.log(eventDetails);
     // return;
     if (!email) {
       Toast.show({
@@ -65,12 +65,16 @@ const InvitationListing = ({ navigation, eventId }: any) => {
       Alert.alert("error", "This event doesn't have a ticket");
       return;
     }
+    let tik_id = eventDetails?.id
+      ? eventDetails.id.toString()
+      : eventDetails.eventtickets[0].id.toString();
+    // return console.log(tik_id);
     try {
       const response = await newApi.post("/api/events/send/invitation", {
         eventId: eventId.toString(),
         userId: email,
         isFree: true,
-        ticketId: eventDetails.id.toString(),
+        ticketId: tik_id,
       });
 
       Toast.show({
