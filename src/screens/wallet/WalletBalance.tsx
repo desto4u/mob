@@ -90,8 +90,9 @@ export default function WalletBalance() {
   const query = useQuery<API_RESPONSE>({
     queryKey: ["transactions", acct, currentPage, searchTerm],
     queryFn: async () => {
-      if (acct == "individual") {
-        console.log(acct);
+      if (acct?.toLowerCase() == "individual") {
+        console.log(acct, "acct");
+
         let resp = await newApi.get(
           "/api/memberships-subscriptions/get/individual/transactions",
           {
@@ -172,17 +173,22 @@ export default function WalletBalance() {
     );
   };
 
+  // console.log(JSON.stringify(query.data?.data[0]));
+
   if (query.isFetching)
     return (
       <PageContainer>
         <PageLoader />
       </PageContainer>
     );
-  console.log(JSON.stringify(query.data?.data[0]));
-
   // return (
   //   <PageContainer>
   //     <HeaderComponent />
+  //   </PageContainer>
+  // );
+  // return (
+  //   <PageContainer>
+  //     <BaseText>{JSON.stringify(acct)}</BaseText>
   //   </PageContainer>
   // );
   return (
