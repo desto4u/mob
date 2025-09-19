@@ -24,6 +24,7 @@ import PageLoader from "../../components/Loader";
 import BaseText from "../../components/BaseText";
 import { useQuery } from "@tanstack/react-query";
 import { newApi } from "../../state/newStates/flow";
+import MaterialErrorComponent from "../../components/errors/ErrorComp";
 
 const AllEvents = ({ navigation }) => {
   const { colorScheme, toggleColorScheme } = useColorScheme();
@@ -41,7 +42,7 @@ const AllEvents = ({ navigation }) => {
   const handleFilterChange = (field: string) => {
     setfilterData({ ...filterData, [field]: !filterData[field] });
   };
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ["all_events", searchQuery],
     queryFn: async () => {
       let resp = await newApi.get("/api/events/events", {
@@ -68,6 +69,18 @@ const AllEvents = ({ navigation }) => {
   //   </PageContainer>
   // );
   //   console.log(filterData.active);
+  //
+  if (isError) {
+    return (
+      <PageContainer>
+        <MaterialErrorComponent
+          backButton
+          onRetry={refetch}
+          showRetryButton={true}
+        />
+      </PageContainer>
+    );
+  }
   return (
     <>
       <PageContainer>
