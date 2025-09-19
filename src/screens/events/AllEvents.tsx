@@ -42,21 +42,25 @@ const AllEvents = ({ navigation }) => {
     setfilterData({ ...filterData, [field]: !filterData[field] });
   };
   const { data, isLoading } = useQuery({
-    queryKey: ["all_events"],
+    queryKey: ["all_events", searchQuery],
     queryFn: async () => {
-      let resp = await newApi.get("/api/events/events");
+      let resp = await newApi.get("/api/events/events", {
+        params: {
+          name: searchQuery,
+        },
+      });
       return resp.data;
     },
   });
 
   const events = data?.data;
 
-  const filteredData =
-    events?.filter((item: any) =>
-      item.name.toLowerCase().includes(searchQuery.toLowerCase()),
-    ) || "";
+  // const filteredData =
+  //   events?.filter((item: any) =>
+  //     item.name.toLowerCase().includes(searchQuery.toLowerCase()),
+  //   ) || "";
 
-  if (isLoading) return <PageLoader />;
+  // if (isLoading) return <PageLoader />;
 
   // return (
   //   <PageContainer>
@@ -101,22 +105,28 @@ const AllEvents = ({ navigation }) => {
                 />
               </View>
             </View>
-            <FlatList
-              data={filteredData}
-              renderItem={({ item }) => (
-                <View style={tw`my-1 mx-1`}>
-                  <OrgEventItem
-                    onPress={() =>
-                      navigation.navigate("EventDetails", {
-                        eventId: item?.id,
-                      })
-                    }
-                    image={images.event_img2}
-                    item={item}
-                  />
-                </View>
-              )}
-            />
+            {isLoading ? (
+              <>
+                <BaseText>loading</BaseText>
+              </>
+            ) : (
+              <FlatList
+                data={events}
+                renderItem={({ item }) => (
+                  <View style={tw`my-1 mx-1`}>
+                    <OrgEventItem
+                      onPress={() =>
+                        navigation.navigate("EventDetails", {
+                          eventId: item?.id,
+                        })
+                      }
+                      image={images.event_img2}
+                      item={item}
+                    />
+                  </View>
+                )}
+              />
+            )}
           </ScrollView>
         </SafeAreaView>
       </PageContainer>
