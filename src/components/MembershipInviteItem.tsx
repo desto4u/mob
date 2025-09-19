@@ -27,6 +27,7 @@ interface ItemProps {
   onPress?: () => void;
   toggleModal: (item: any) => void;
   item: any;
+  fullItem: any;
   membershipId: string;
   designation: string;
 }
@@ -36,6 +37,7 @@ const MembershipInviteItem = ({
   item,
   designation,
   toggleModal,
+  fullItem,
 }: ItemProps) => {
   return (
     <>
@@ -75,7 +77,7 @@ const MembershipInviteItem = ({
         <View style={tw`flex-row  items-start gap-3 mt-auto `}>
           <Pressable
             style={tw`bg-[#F23C2433] px-2 py-3 rounded-[10px]`}
-            onPress={() => toggleModal(item)}
+            onPress={() => toggleModal(item, fullItem)}
           >
             <Feather name="x" size={20} color="#FC4848" />
           </Pressable>

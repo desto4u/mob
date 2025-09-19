@@ -25,6 +25,9 @@ import PrimaryButton from "./buttons/PrimaryButtom";
 import Toast from "react-native-toast-message";
 import images from "../utils/constants/images";
 import SimpleLoader from "./SimpleLoader";
+import { useMutation } from "@tanstack/react-query";
+import { newApi } from "../state/newStates/flow";
+import { AxiosError } from "axios";
 
 const MembershipInvites = ({}) => {
   const [deleteMemberInvite, { isLoading: isDeletting }] =
@@ -38,47 +41,56 @@ const MembershipInvites = ({}) => {
   const [refreshing, setRefreshing] = useState(false);
   const [modal, setModal] = useState(false);
   const [selected, setSelected] = useState<any>({});
+  const [selected_item, setSelected_item] = useState<any>({});
 
   if (isGettingPending) return <SimpleLoader />;
-  const toggleModal = (item) => {
+  const toggleModal = (item: any, fullItem: any) => {
     setModal(!modal);
     setSelected(item);
+    setSelected_item(fullItem);
   };
 
   const closeModal = () => {
     setModal(false);
   };
-
-  const handleSubmit = async () => {
-    try {
-      const response = await deleteMemberInvite({
-        requestId: selected.id,
-      });
-      console.log(response?.error);
-      if (response?.error) {
-        console.log("error", response.error);
-        return Toast.show({
-          type: "error",
-          text1: response?.error?.data?.message,
-        });
-      }
+  let delete_mutation = useMutation({
+    mutationFn: async () => {
+      let resp = await newApi.delete(
+        "/api/memberships-subscriptions/organization/membership/pending/delete?requestId" +
+          selected.id,
+        {
+          params: {
+            membershipId: selected_item.id.toString(),
+            status: "declined", // declined, inactive or active
+            memberId: selected_item.memberId,
+            organizationEmail: selected_item.organizationEmail, // Not Required
+          },
+        },
+      );
+      return resp.data;
+    },
+    onSuccess: () => {
       Toast.show({
         type: "success",
-        text1: response?.data?.message,
+        text1: "Membership deleted successfully",
       });
-    } catch (error: any) {
-      console.log(error);
-      console.log(error);
+      closeModal();
+    },
+    onError: (error: AxiosError) => {
       Toast.show({
         type: "error",
-        text1: error.response?.data?.message || "An error occurred",
+        text1: error?.response?.data?.message || "An error occured",
       });
-    }
+    },
+  });
+
+  const handleSubmit = async () => {
+    // return console.log(selected_item);
+    delete_mutation.mutate();
   };
 
   const onRefresh = async () => {
     setRefreshing(true);
-
     try {
       await refetchInvite();
     } catch (error) {
@@ -94,13 +106,13 @@ const MembershipInvites = ({}) => {
         data={pendingInvite?.data}
         renderItem={({ item }) => (
           <View style={tw`my-3`}>
-            {/* <MembershipInviteItem
+            <MembershipInviteItem
               item={item.individual}
+              fullItem={item}
               designation={item?.designation}
               membershipId={item.id}
               toggleModal={toggleModal}
-
-            /> */}
+            />
           </View>
         )}
         style={tw`mt-5 `}
@@ -147,7 +159,7 @@ const MembershipInvites = ({}) => {
             <PrimaryButton
               size={13}
               style={tw``}
-              loading={isDeletting}
+              loading={delete_mutation.isPending}
               onPress={handleSubmit}
               color="#F74D1B"
             >
