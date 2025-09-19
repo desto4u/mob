@@ -1,9 +1,4 @@
-import {
-  FlatList,
-  ScrollView,
-  StyleSheet,
-  View,
-} from "react-native";
+import { FlatList, ScrollView, StyleSheet, View } from "react-native";
 import React, { useState } from "react";
 import PageContainer from "../../components/PageContainer";
 import {
@@ -26,6 +21,9 @@ import tw from "../../lib/tailwind";
 import BackButton from "../../components/BackButton";
 import OrgEventItem from "../../components/event/OrgEventItem";
 import PageLoader from "../../components/Loader";
+import BaseText from "../../components/BaseText";
+import { useQuery } from "@tanstack/react-query";
+import { newApi } from "../../state/newStates/flow";
 
 const AllEvents = ({ navigation }) => {
   const { colorScheme, toggleColorScheme } = useColorScheme();
@@ -43,17 +41,28 @@ const AllEvents = ({ navigation }) => {
   const handleFilterChange = (field: string) => {
     setfilterData({ ...filterData, [field]: !filterData[field] });
   };
-  const { data, isLoading } = useGetEventsQuery();
+  const { data, isLoading } = useQuery({
+    queryKey: ["all_events"],
+    queryFn: async () => {
+      let resp = await newApi.get("/api/events/events");
+      return resp.data;
+    },
+  });
 
   const events = data?.data;
 
   const filteredData =
     events?.filter((item: any) =>
-      item.name.toLowerCase().includes(searchQuery.toLowerCase())
+      item.name.toLowerCase().includes(searchQuery.toLowerCase()),
     ) || "";
 
   if (isLoading) return <PageLoader />;
 
+  // return (
+  //   <PageContainer>
+  //     <BaseText>{JSON.stringify(data)}</BaseText>
+  //   </PageContainer>
+  // );
   //   console.log(filterData.active);
   return (
     <>
@@ -91,7 +100,6 @@ const AllEvents = ({ navigation }) => {
                   onChangeText={setSearchQuery}
                 />
               </View>
-             
             </View>
             <FlatList
               data={filteredData}
