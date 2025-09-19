@@ -31,49 +31,72 @@ import PrimaryButton from "../../components/buttons/PrimaryButtom";
 import Toast from "react-native-toast-message";
 import { useRequestActionMutation } from "../../state/features/services/membership/membership";
 import { formatDate } from "../../utils/helpers";
+import { useMutation } from "@tanstack/react-query";
+import { newApi } from "../../state/newStates/flow";
+import { useNavigation } from "@react-navigation/native";
 
 const IndividualPendingReview = ({ navigation, route }: any) => {
   // const insets = useSafeAreaInsets();
 
   const { data } = route?.params;
   const { organization } = data;
-
+  const nav = useNavigation();
   const [dropdown, setDropdown] = useState(false);
 
   const [modal, setModal] = useState(false);
   const toggleModal = () => setModal(!modal);
 
-  const [requestAction, { isLoading: sendingRequest }] =
-    useRequestActionMutation();
-
-  const handleSubmit = async () => {
-    try {
-      const response = await requestAction({
-        membershipId: parseInt(data.id),
-        status: data.status === "active" ? "inactive" : "active",
-      });
-
-      if (response?.error) {
-        console.log("response error", response?.error);
-        return Toast.show({
-          type: "error",
-          text1: response?.error?.data?.message,
-        });
-      }
+  // const [requestAction, { isLoading: sendingRequest }] =
+  //   useRequestActionMutation();
+  const delete_mutation = useMutation({
+    mutationFn: async () => {
+      let resp = await newApi.delete(
+        "/api/memberships-subscriptions/individual/membership/pending/delete?requestId=" +
+          data.id,
+      );
+    },
+    onSuccess: () => {
       Toast.show({
         type: "success",
-        text1: response?.data?.message,
+        text1: "Membership deleted successfully",
       });
-      navigation.goBack();
-      // navigation.navigate("RequestSuccess")
-    } catch (error: any) {
-      console.log(error);
-      console.log(error);
+      nav.goBack();
+    },
+    onError: () => {
       Toast.show({
         type: "error",
-        text1: error.response?.data?.message || "An error occurred",
+        text1: "failed",
       });
-    }
+    },
+  });
+  const handleSubmit = async () => {
+    delete_mutation.mutate();
+    // try {
+    //   const response = await requestAction({
+    //     membershipId: parseInt(data.id),
+    //     status: data.status === "active" ? "inactive" : "active",
+    //   });
+    //   if (response?.error) {
+    //     console.log("response error", response?.error);
+    //     return Toast.show({
+    //       type: "error",
+    //       text1: response?.error?.data?.message,
+    //     });
+    //   }
+    //   Toast.show({
+    //     type: "success",
+    //     text1: response?.data?.message,
+    //   });
+    //   navigation.goBack();
+    //   // navigation.navigate("RequestSuccess")
+    // } catch (error: any) {
+    //   console.log(error);
+    //   console.log(error);
+    //   Toast.show({
+    //     type: "error",
+    //     text1: error.response?.data?.message || "An error occurred",
+    //   });
+    // }
   };
   return (
     <>
@@ -137,9 +160,22 @@ const IndividualPendingReview = ({ navigation, route }: any) => {
                   itemKey="Status"
                   value={data.status}
                 />
-                {/* <ListItem icon={icons.verify} itemKey="Subscription Status" value="Active" /> */}
+                <ListItem
+                  icon={icons.verify}
+                  itemKey="Subscription Status"
+                  value="Active"
+                />
               </View>
             </View>
+            <PrimaryButton
+              loading={delete_mutation.isPending}
+              style={tw`mt-4 bg-red-500 mx-4`}
+              onPress={() => {
+                handleSubmit();
+              }}
+            >
+              Delete
+            </PrimaryButton>
           </View>
         </ScrollView>
       </PageContainer>
@@ -172,7 +208,7 @@ const IndividualPendingReview = ({ navigation, route }: any) => {
               </View>
             </View>
 
-            <PrimaryButton
+            {/*<PrimaryButton
               size={13}
               style={tw``}
               loading={sendingRequest}
@@ -180,7 +216,7 @@ const IndividualPendingReview = ({ navigation, route }: any) => {
               color="#F74D1B"
             >
               {data.status === "active" ? "Deactivate User" : "Activate User"}
-            </PrimaryButton>
+            </PrimaryButton>*/}
           </View>
         </View>
       </BottomModals>

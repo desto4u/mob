@@ -42,7 +42,30 @@ const MembershipInvites = ({}) => {
   const [modal, setModal] = useState(false);
   const [selected, setSelected] = useState<any>({});
   const [selected_item, setSelected_item] = useState<any>({});
-
+  let delete_mutation = useMutation({
+    mutationFn: async () => {
+      let resp = await newApi.delete(
+        "/api/memberships-subscriptions/organization/membership/pending/delete?requestId=" +
+          selected_item.id,
+      );
+      return resp.data;
+    },
+    onSuccess: () => {
+      Toast.show({
+        type: "success",
+        text1: "Membership deleted successfully",
+      });
+      closeModal();
+      refetchInvite();
+    },
+    onError: (error: AxiosError) => {
+      console.log(JSON.stringify(error.response?.data));
+      Toast.show({
+        type: "error",
+        text1: error?.response?.data?.message || "An error occured",
+      });
+    },
+  });
   if (isGettingPending) return <SimpleLoader />;
   const toggleModal = (item: any, fullItem: any) => {
     setModal(!modal);
@@ -53,36 +76,6 @@ const MembershipInvites = ({}) => {
   const closeModal = () => {
     setModal(false);
   };
-  let delete_mutation = useMutation({
-    mutationFn: async () => {
-      let resp = await newApi.delete(
-        "/api/memberships-subscriptions/organization/membership/pending/delete?requestId" +
-          selected.id,
-        {
-          params: {
-            membershipId: selected_item.id.toString(),
-            status: "declined", // declined, inactive or active
-            memberId: selected_item.memberId,
-            organizationEmail: selected_item.organizationEmail, // Not Required
-          },
-        },
-      );
-      return resp.data;
-    },
-    onSuccess: () => {
-      Toast.show({
-        type: "success",
-        text1: "Membership deleted successfully",
-      });
-      closeModal();
-    },
-    onError: (error: AxiosError) => {
-      Toast.show({
-        type: "error",
-        text1: error?.response?.data?.message || "An error occured",
-      });
-    },
-  });
 
   const handleSubmit = async () => {
     // return console.log(selected_item);
