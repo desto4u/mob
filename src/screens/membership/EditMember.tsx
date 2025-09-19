@@ -122,13 +122,15 @@ export default function EditMember({ navigation, route }: any) {
       return resp.data;
     },
   });
-  const designations_data = designations.data?.data.map((e) => {
-    return {
-      label: e.name,
-      value: e.name,
-      ...e,
-    };
-  });
+  const designations_data = designations.data?.data
+    .filter((e) => e.name !== member?.designation)
+    .map((e) => {
+      return {
+        label: e.name,
+        value: e.name,
+        ...e,
+      };
+    });
   designations_data?.push(initial_designation);
   return (
     <>
@@ -182,9 +184,10 @@ export default function EditMember({ navigation, route }: any) {
                   valueField={"value"}
                   search
                   value={designation.value}
-                  dropdownPosition="top"
+                  dropdownPosition="bottom"
                   searchPlaceholder="Search Roles"
-                  itemTextStyle={tw`text-sm text-black`}
+                  selectedTextStyle={tw`text-sm dark:text-white text-black`}
+                  itemTextStyle={tw`text-sm dark:text-white text-black`}
                   data={designations_data || []}
                   onChange={(item) => {
                     console.log(item);

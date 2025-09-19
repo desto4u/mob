@@ -58,13 +58,15 @@ export default function MemberDesignations({ role, onChange }: any) {
   }, [designations.isError, designations.error]);
 
   const designations_data =
-    designations.data?.data?.map((e) => {
-      return {
-        label: e.name,
-        value: e.name,
-        ...e,
-      };
-    }) || [];
+    designations.data?.data
+      .filter((e) => e.name !== member?.designation)
+      .map((e) => {
+        return {
+          label: e.name,
+          value: e.name,
+          ...e,
+        };
+      }) || [];
   return (
     <View style={tw`flex-row flex items-center`}>
       <Dropdown
@@ -78,7 +80,7 @@ export default function MemberDesignations({ role, onChange }: any) {
         search
         dropdownPosition="top"
         searchPlaceholder="Search Roles"
-        itemTextStyle={tw`text-sm text-black`}
+        itemTextStyle={tw`text-sm dark:text-white text-black`}
         data={designations_data || []}
         value={value?.value || ""}
         onChange={(item) => {

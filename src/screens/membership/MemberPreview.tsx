@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import PageContainer from "../../components/PageContainer";
 import {
   SafeAreaView,
@@ -34,18 +34,25 @@ import Toast from "react-native-toast-message";
 import { useRequestActionMutation } from "../../state/features/services/membership/membership";
 import { formatDate } from "../../utils/helpers";
 import BaseText from "../../components/BaseText";
-import { useMemberEdit } from "../../state/newStates/flow";
+import { newApi, useMemberEdit } from "../../state/newStates/flow";
+import { TextInput } from "react-native-gesture-handler";
 
 const MemberPreview = ({ navigation, route }: any) => {
   // const insets = useSafeAreaInsets();
 
   const { data } = route?.params;
   const { individual } = data;
-
+  const inputRef = useRef<string | null>(null);
+  const textInputRef = useRef<TextInput>(null);
   const [dropdown, setDropdown] = useState(false);
 
   const [modal, setModal] = useState(false);
   const toggleModal = () => setModal(!modal);
+  useEffect(() => {
+    inputRef.current = "";
+    textInputRef.current?.clear();
+    textInputRef.current?.focus();
+  }, [modal]);
 
   const [requestAction, { isLoading: sendingRequest, error }] =
     useRequestActionMutation();
@@ -53,14 +60,24 @@ const MemberPreview = ({ navigation, route }: any) => {
   console.log(error);
 
   const handleSubmit = async () => {
-    console.log(data.id);
+    // return console.log(inputRef.current);
     // return;
     try {
-      const response = await requestAction({
-        membershipId: data.id,
-        status: data.status === "active" ? "inactive" : "active",
-      });
+      // const response = await requestAction({
+      //   membershipId: data.id,
+      //   status: data.status === "active" ? "inactive" : "active",
+      // });
 
+      const response = await newApi.put(
+        "/api/memberships-subscriptions/organization/update/membership/status",
+        {
+          membershipId: data.id,
+          memberId: data.memberId,
+          // status: "inactive",
+          status: data.status === "active" ? "inactive" : "active",
+          reason: inputRef.current,
+        },
+      );
       if (response?.error) {
         return Alert.alert("error", response?.error?.data?.message);
       }
@@ -206,7 +223,7 @@ const MemberPreview = ({ navigation, route }: any) => {
                 }
                 icon={icons.verify}
                 itemKey="Status"
-                value={data.status}
+                value={data.status === "active" ? "Active" : "Inactive"}
               />
               {/* <ListItem icon={icons.verify} itemKey="Subscription Status" value="Active" /> */}
             </View>
@@ -243,6 +260,19 @@ const MemberPreview = ({ navigation, route }: any) => {
                 </TextPrimary>
               </View>
             </View>
+            {/*<BaseText>
+              {individual.status == "active" ? "Activated" : "Inactive"}
+            </BaseText>*/}
+            {data?.status == "active" ? (
+              <InputText
+                label="Reason"
+                placeholder="Enter reason"
+                defaultValue={""}
+                ref={textInputRef}
+                style={tw`w-full`}
+                onChangeText={(text) => (inputRef.current = text)}
+              />
+            ) : null}
 
             <PrimaryButton
               size={13}

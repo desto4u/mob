@@ -1,30 +1,42 @@
-import { FlatList, Image, RefreshControl, StyleSheet, Text, View } from "react-native";
+import {
+  FlatList,
+  Image,
+  RefreshControl,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import React, { useState } from "react";
 import TextPrimary from "../texts/text";
 import tw from "../../lib/tailwind";
 import TicketRequestItem from "./TicketRequestItem";
 import images from "../../utils/constants/images";
 import { navigationRef } from "../../navigation/navigationRef";
-import { useGetEventTicketRequestQuery, useTicketRequestActionMutation } from "../../state/features/services/events/events";
+import {
+  useGetEventTicketRequestQuery,
+  useTicketRequestActionMutation,
+} from "../../state/features/services/events/events";
 import SimpleLoader from "../SimpleLoader";
 import ReusableBottomSheet from "../shared/ReusableBottomSheet";
 import PrimaryButton from "../buttons/PrimaryButtom";
 import Toast from "react-native-toast-message";
 
-const TicketRequestListing = ({ eventId }:any) => {
+const TicketRequestListing = ({ eventId }: any) => {
   const [refreshing, setRefreshing] = useState(false);
   const [modal, setModal] = useState(false);
   const [selectedMember, setSelectedMember] = useState<any>(null);
-  const [requestAction, setRequestAction] = useState<'decline' | 'approve' | string>('');
+  const [requestAction, setRequestAction] = useState<
+    "decline" | "approve" | string
+  >("");
   const { data, isLoading, refetch, isFetching } =
     useGetEventTicketRequestQuery(eventId);
-
-    const [ticketAction,{isLoading:isSending}] = useTicketRequestActionMutation()
+  const [ticketAction, { isLoading: isSending }] =
+    useTicketRequestActionMutation();
   if (isLoading) return <SimpleLoader />;
 
   const handleAction = async () => {
     try {
-      const response:any = await ticketAction({
+      const response: any = await ticketAction({
         requestId: selectedMember?.id,
         action: requestAction,
       });
@@ -49,9 +61,7 @@ const TicketRequestListing = ({ eventId }:any) => {
         text1: error.response?.data?.message || "An error occurred",
       });
     }
-  }
-
-
+  };
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -64,55 +74,51 @@ const TicketRequestListing = ({ eventId }:any) => {
     }
   };
 
-  const toggleModal = (item:any, action:string) => {
+  const toggleModal = (item: any, action: string) => {
     setSelectedMember(item);
-    setRequestAction(action)
+    setRequestAction(action);
     setModal(!modal);
   };
 
   const closeModal = () => setModal(false);
 
-  
-
   return (
     <>
-    <View style={tw`flex-1 px-[5%]`}>
-      <TextPrimary>Users requesting this event ticket</TextPrimary>
-      <FlatList
-        data={data?.data}
-        renderItem={({ item }) => (
-          <View style={tw`my-3`}>
-            <TicketRequestItem
-              item={item}
-              // onPress={() => navigationRef.navigate("EventDetails")}
-              toggleModal={toggleModal}
-              image={images.event}
+      <View style={tw`flex-1 px-[5%]`}>
+        <TextPrimary>Users requesting this event ticket</TextPrimary>
+        <FlatList
+          data={data?.data}
+          renderItem={({ item }) => (
+            <View style={tw`my-3`}>
+              <TicketRequestItem
+                item={item}
+                // onPress={() => navigationRef.navigate("EventDetails")}
+                toggleModal={toggleModal}
+                image={images.event}
+              />
+            </View>
+          )}
+          style={tw``}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing || isFetching}
+              onRefresh={onRefresh}
             />
-          </View>
-        )}
-        style={tw``}
-        refreshControl={
-          <RefreshControl
-            refreshing={refreshing || isFetching}
-            onRefresh={onRefresh}
-          />
-        }
-      />
-    </View>
-    <ReusableBottomSheet
+          }
+        />
+      </View>
+      <ReusableBottomSheet
         isVisible={modal}
         onClose={closeModal}
         snapPoints={["30%"]}
       >
         <View style={tw`p-5 pt-2 `}>
           <TextPrimary font="medium" size={15} style={tw`text-center mt-0`}>
-            {
-              requestAction === 'decline'
-               ? 'Decline Ticket Request'
-                : requestAction === 'approve'
-               ? 'Accept Ticket Request'
-                : 'Delete Request'
-            }
+            {requestAction === "decline"
+              ? "Decline Ticket Request"
+              : requestAction === "approve"
+                ? "Accept Ticket Request"
+                : "Delete Request"}
           </TextPrimary>
           <View style={tw`gap-5 mt-3`}>
             {/* <View style={tw`flex-col gap-2 items-center`}>
@@ -143,13 +149,11 @@ const TicketRequestListing = ({ eventId }:any) => {
               loading={isSending}
               onPress={handleAction}
             >
-              {
-                requestAction === 'decline'
-                 ? 'Decline'
-                  : requestAction === 'approve'
-                 ? 'Approve'
-                  : 'Delete'
-              }
+              {requestAction === "decline"
+                ? "Decline"
+                : requestAction === "approve"
+                  ? "Approve"
+                  : "Delete"}
             </PrimaryButton>
           </View>
         </View>

@@ -9,7 +9,13 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React, { FC, useState } from "react";
+import React, {
+  FC,
+  useState,
+  forwardRef,
+  useImperativeHandle,
+  Ref,
+} from "react";
 import { colors } from "../../utils/constants/colors";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { useSelector } from "react-redux";
@@ -18,7 +24,7 @@ import TextPrimary from "../texts/text";
 import { useColorScheme } from "nativewind";
 import tw from "../../lib/tailwind";
 
-interface IInputText {
+interface IInputText extends React.HTMLProps<HTMLInputElement> {
   placeholder: string;
   style?: any;
   secureTextEntry?: boolean;
@@ -38,7 +44,12 @@ interface IInputText {
   defaultValue?: string;
 }
 
-const InputText: FC<IInputText> = (props) => {
+interface InputTextRef {
+  focus: () => void;
+  clear: () => void;
+}
+
+const InputText = forwardRef<InputTextRef, IInputText>((props, ref) => {
   const {
     placeholder,
     icon,
@@ -57,14 +68,27 @@ const InputText: FC<IInputText> = (props) => {
     iconRight,
     editable,
     defaultValue,
+    ...rest
   } = props;
 
   const [isPasswordVisible, setIsPasswordVisible] = useState<boolean>(false);
+  const inputRef = React.useRef<TextInput>(null);
 
   const togglePasswordVisibility = () => {
     setIsPasswordVisible(!isPasswordVisible);
   };
+
   const { colorScheme } = useColorScheme();
+
+  useImperativeHandle(ref, () => ({
+    focus: () => {
+      inputRef.current?.focus();
+    },
+    clear: () => {
+      inputRef.current?.clear();
+    },
+  }));
+
   return (
     <View>
       <Pressable
@@ -80,6 +104,7 @@ const InputText: FC<IInputText> = (props) => {
         )}
 
         <TextInput
+          ref={inputRef}
           defaultValue={defaultValue}
           placeholder={placeholder ? placeholder : "Enter text"}
           style={[styles.inputText, tw`text-black dark:text-white text-base`]}
@@ -91,12 +116,9 @@ const InputText: FC<IInputText> = (props) => {
           autoCapitalize={autoCapitalize}
           autoCorrect={autoCorrect}
           returnKeyType={returnKeyType}
-          placeholderStyle={[
-            styles.placeholderStyle,
-            tw`dark:text-white text-black`,
-          ]}
           onSubmitEditing={onSubmitEditing}
           keyboardType={keyboardType}
+          {...rest}
         />
         {iconRight && (
           <Image
@@ -124,7 +146,7 @@ const InputText: FC<IInputText> = (props) => {
       )}
     </View>
   );
-};
+});
 const styles = StyleSheet.create({
   inputContainer: {
     // marginBottom: 10,
