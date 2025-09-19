@@ -33,6 +33,7 @@ import {
 import Toast from "react-native-toast-message";
 import CenterModal from "../../components/modals/CenterModal";
 import BottomModals from "../../components/modals/BottomModals";
+import BaseText from "../../components/BaseText";
 
 const CreateEvent3 = ({ navigation, route }) => {
   const { payload, eventDetails } = route?.params;
@@ -340,7 +341,9 @@ const CreateEvent3 = ({ navigation, route }) => {
                   style={tw`mt-5`}
                   onPress={toggleConfirmModal}
                 >
-                  {eventDetails ? "Update Event" : "Create Event"}
+                  <BaseText>
+                    {eventDetails ? "Update Event" : "Create Event"}
+                  </BaseText>
                 </PrimaryButton>
               </View>
             </View>
@@ -373,7 +376,7 @@ const CreateEvent3 = ({ navigation, route }) => {
                 color=""
                 style={tw`border border-[#606060]`}
               >
-                Cancel
+                <BaseText>Cancel</BaseText>
               </PrimaryButton>
             </View>
           </View>
