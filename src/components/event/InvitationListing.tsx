@@ -65,16 +65,21 @@ const InvitationListing = ({ navigation, eventId }: any) => {
       Alert.alert("error", "This event doesn't have a ticket");
       return;
     }
-    let tik_id = eventDetails?.id
-      ? eventDetails.id.toString()
+    // const tickets = eventDetails.eventtickets;
+    let tik_id = eventDetails?.eventtickets?.id
+      ? eventDetails?.eventtickets?.id.toString()
       : eventDetails.eventtickets[0].id.toString();
     // return console.log(tik_id);
+    const payload = {
+      eventId: eventId.toString(),
+      userId: email,
+      isFree: true,
+      ticketId: tik_id,
+    };
+    // return console.log(payload);
     try {
       const response = await newApi.post("/api/events/send/invitation", {
-        eventId: eventId.toString(),
-        userId: email,
-        isFree: true,
-        ticketId: tik_id,
+        ...payload,
       });
 
       Toast.show({
