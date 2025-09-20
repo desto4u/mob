@@ -15,10 +15,11 @@ import { useGetUserQuery } from "../../state/features/services/users/user";
 import { memo, useRef, useState } from "react";
 import PrimaryButton from "../../components/buttons/PrimaryButtom";
 import InputText from "../../components/inputs/InputText";
-import Feather from "@expo/vector-icons/Feather";
 import InputTextWithLabel from "../../components/inputs/InputWithLabel";
 import icons from "../../utils/constants/icons";
 import { useTokenStore } from "../../state/newStates/auth";
+import IndWalletBalance from "./IndWalletBalance";
+import OrgWalletBalance from "./OrgWalletBalance";
 interface Transaction {
   id: number;
   individualId: string;
@@ -75,7 +76,7 @@ const dummyTransactions = [
   // ... (dummyTransactions array remains the same)
 ];
 
-interface API_RESPONSE {
+export interface TRANSACTTION_API_RESPONSE {
   code: number;
   message: string;
   data: any[];
@@ -84,96 +85,11 @@ export default function WalletBalance() {
   let nav = useNavigation();
   const [currentPage, setCurrentPage] = useState(1);
   const acct = useTokenStore((state) => state.userObject?.data.accountType);
+  if (acct?.toLowerCase() == "individual") {
+    return <IndWalletBalance />;
+  }
+  return <OrgWalletBalance />;
   const limit = 10;
-  const temp = useRef("");
-  const [searchTerm, setSearchTerm] = useState("");
-  const query = useQuery<API_RESPONSE>({
-    queryKey: ["transactions", acct, currentPage, searchTerm],
-    queryFn: async () => {
-      if (acct?.toLowerCase() == "individual") {
-        console.log(acct, "acct");
-
-        let resp = await newApi.get(
-          "/api/memberships-subscriptions/get/individual/transactions",
-          {
-            params: {
-              page: currentPage,
-              limit: limit,
-            },
-          },
-        );
-        return resp.data;
-      }
-      if (!searchTerm.trim()) {
-        let resp = await newApi.get(
-          "/api/memberships-subscriptions/get/organization/transactions",
-          {
-            params: {
-              page: currentPage,
-              limit: limit,
-            },
-          },
-        );
-        return resp.data;
-      }
-      let resp = await newApi.get(
-        "/api/memberships-subscriptions/get/organization/transactions/search",
-        {
-          params: {
-            searchParam: searchTerm,
-            page: currentPage,
-            limit: limit,
-          },
-        },
-      );
-      return resp.data;
-    },
-  });
-  const HeaderComponent = () => {
-    if (acct?.toLowerCase() == "individual") {
-      return null;
-    }
-    return (
-      <View style={tw`flex flex-row items-center gap-2 mb-4`}>
-        <View style={tw`flex-1`}>
-          {/*<BaseText>{accountType}</BaseText>*/}
-          <InputText
-            onChangeText={(e) => {
-              temp.current = e;
-            }}
-            icon={icons.search}
-            defaultValue={searchTerm}
-            placeholder="Search"
-            style={tw`border border-[#484848] rounded-[10px] h-[36px]`}
-          />
-          {/*<TextInput />*/}
-        </View>
-        <TouchableOpacity
-          style={tw`bg-primary rounded-[10px] p-2`}
-          onPress={() => {
-            if (!temp.current.trim()) {
-              return;
-            }
-            // console.log(temp.current);
-            setSearchTerm(temp.current);
-          }}
-        >
-          <BaseText>
-            <Feather name="search" size={18} color="white" />
-          </BaseText>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={tw`bg-red-500 rounded-[10px] p-2`}
-          onPress={() => {
-            temp.current = "";
-            setSearchTerm("");
-          }}
-        >
-          <Feather name="x" size={18} color="white" />
-        </TouchableOpacity>
-      </View>
-    );
-  };
 
   // console.log(JSON.stringify(query.data?.data[0]));
 
@@ -195,64 +111,9 @@ export default function WalletBalance() {
   // );
   return (
     <PageContainer padding={0}>
-      <View
-        style={tw`px-4  pb-2 flex flex-row border-b border-neutral-500/20 pb-4  `}
-      >
-        <BackButton onPress={(e) => nav.goBack()} />
-        <Header style={tw`mx-auto`}>Transaction History</Header>
-
-        {/* Balance Card */}
-      </View>
       <View style={tw`p-4 px-0 flex-1`}>
         {/*<BaseText>{searchTerm}sss</BaseText>*/}
-        {query.isError && <HeaderComponent />}
-        {!query.isError && (
-          <FlashList
-            contentContainerStyle={tw`px-3`}
-            data={query.data?.data}
-            renderItem={({ index, item }) => {
-              return <TransactionItem transaction={item} key={item.id} />;
-            }}
-            ListHeaderComponent={HeaderComponent}
-            ListFooterComponent={() => (
-              <View
-                style={tw`py-6 flex flex-row items-center justify-center gap-4`}
-              >
-                <PrimaryButton
-                  style={tw`px-4 py-1`}
-                  onPress={() => {
-                    if (currentPage > 2) {
-                      setCurrentPage(currentPage - 1);
-                    }
-                  }}
-                >
-                  <BaseText
-                    style={tw`text-xl  font-medium text-blue- bg dark:text-blue-400 capitalize`}
-                  >
-                    -
-                  </BaseText>
-                </PrimaryButton>
-                <BaseText style={tw`text-center text-gray-500`}>
-                  Page: {currentPage}
-                </BaseText>
-                <PrimaryButton
-                  style={tw`px-4 py-1`}
-                  onPress={() => {
-                    if (query.data?.data?.length == limit) {
-                      setCurrentPage(currentPage + 1);
-                    }
-                  }}
-                >
-                  <BaseText
-                    style={tw`text-xl font-medium text-blue- bg dark:text-blue-400 capitalize`}
-                  >
-                    +
-                  </BaseText>
-                </PrimaryButton>
-              </View>
-            )}
-          ></FlashList>
-        )}
+        {/*{query.isError && <HeaderComponent />}
 
         {query.isError && (
           <MaterialErrorComponent
@@ -261,12 +122,16 @@ export default function WalletBalance() {
             // backButton
             onRetry={query.refetch}
           ></MaterialErrorComponent>
-        )}
+        )}*/}
       </View>
     </PageContainer>
   );
 }
-const TransactionItem = ({ transaction }: { transaction: Transaction }) => {
+export const TransactionItem = ({
+  transaction,
+}: {
+  transaction: Transaction;
+}) => {
   const { amount, createdAt, status, paystackResponse, reference, individual } =
     transaction;
   const isSuccessful = status.toLowerCase() === "success";

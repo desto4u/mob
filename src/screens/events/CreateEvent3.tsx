@@ -34,6 +34,9 @@ import Toast from "react-native-toast-message";
 import CenterModal from "../../components/modals/CenterModal";
 import BottomModals from "../../components/modals/BottomModals";
 import BaseText from "../../components/BaseText";
+import { useMutation } from "@tanstack/react-query";
+import { newApi } from "../../state/newStates/flow";
+import { AxiosError, AxiosResponse } from "axios";
 
 const CreateEvent3 = ({ navigation, route }) => {
   const { payload, eventDetails } = route?.params;
@@ -41,7 +44,9 @@ const CreateEvent3 = ({ navigation, route }) => {
   const [createEvent, { isLoading }] = useCreateEventMutation();
   const [updateEvent, { isLoading: isUpdating }] = useUpdateEventMutation();
   const [showConfirmModal, setShowConfirmModal] = useState(false);
-  const toggleConfirmModal = () => setShowConfirmModal(!showConfirmModal);
+  const toggleConfirmModal = () => {
+    setShowConfirmModal(!showConfirmModal);
+  };
 
   const [ticketType, setTicketType] = useState(
     eventDetails?.ticketType ?? "Paid",
@@ -84,12 +89,6 @@ const CreateEvent3 = ({ navigation, route }) => {
 
     // Update tickets state for UI rendering
     setTickets([...tickets, newTicket]);
-
-    // Update eventTickets array with the new ticket in the specified format
-    // setEventTickets([
-    //   ...eventTickets,
-    //   { name: "", ticketsAvailable: 0, plusAllowed: 0, price: 0 },
-    // ]);
   };
 
   const handleRemoveTicket = (id) => {
@@ -97,11 +96,6 @@ const CreateEvent3 = ({ navigation, route }) => {
     setTickets((prevTickets) =>
       prevTickets.filter((ticket) => ticket.id !== id),
     );
-
-    // Update eventTickets array to remove the ticket at the same index
-    // setEventTickets((prevEventTickets) =>
-    //   prevEventTickets.filter((ticket) => ticket.id !== id)
-    // );
   };
 
   const handleTicketChange = (id, field, value) => {
@@ -117,20 +111,19 @@ const CreateEvent3 = ({ navigation, route }) => {
         ticket.id === id ? { ...ticket, [field]: parsedValue } : ticket,
       ),
     );
-
-    // // Update eventTickets array to reflect changes in the specific ticket format
-    // setEventTickets((prevEventTickets) =>
-    //   prevEventTickets.map((ticket, index) =>
-    //     index === id - 1
-    //       ? {
-    //           ...ticket,
-    //           [field]: parsedValue,
-    //         }
-    //       : ticket
-    //   )
-    // );
   };
-
+  const create_event_mutation = useMutation({
+    mutationFn: async (payload: any) => {
+      let resp = await newApi.post("/api/events/event/create", payload);
+      return resp.data;
+    },
+    onError: (err: AxiosError) => {
+      console.log(err.response.data);
+    },
+    onSuccess: (data: AxiosResponse) => {
+      console.log(data.data);
+    },
+  });
   const handleSubmit = async () => {
     console.log(tickets);
     if (tickets.length === 0) {
@@ -138,13 +131,22 @@ const CreateEvent3 = ({ navigation, route }) => {
       return;
     }
     const sanitizedTickets = tickets.map((ticket) => {
-      if (eventDetails?.eventtickets?.some((t) => t.id === ticket.id)) {
+      if (eventDetails?.eventtickets?.some((t: any) => t.id === ticket.id)) {
         return ticket; // Keep the id for existing tickets
       } else {
         const { id, ...rest } = ticket;
         return rest; // Remove the id for new tickets
       }
     });
+    if (ticketType == "Free") {
+      console.log("free ticket");
+      sanitizedTickets.map((tik) => ({
+        ...tik,
+        // plusAllowed: 1,
+        // price: 0,
+      }));
+      // console.log(sanitizedTickets, "tickets");
+    }
 
     try {
       let response;
@@ -159,8 +161,9 @@ const CreateEvent3 = ({ navigation, route }) => {
           tickets: sanitizedTickets,
         });
       } else {
-        response = await createEvent({
+        response = await create_event_mutation.mutateAsync({
           ...payload,
+          // plusAllowed: 1,
           // recurrenceEndDate:"",
           // recurrenceEndType:"",
           ticketType,
@@ -276,6 +279,27 @@ const CreateEvent3 = ({ navigation, route }) => {
                           handleTicketChange(ticket.id, "name", value)
                         }
                       />
+                      <InputTextWithLabel
+                        label="No of Plus"
+                        placeholder="Enter number of extras allowed"
+                        keyboardType="number-pad"
+                        value={ticket.plusAllowed}
+                        onChangeText={(value) =>
+                          handleTicketChange(ticket.id, "plusAllowed", value)
+                        }
+                      />
+                      {/*<View>
+                        <InputTextWithLabel
+                          label="price"
+                          placeholder="Ticket Price"
+                          keyboardType="number-pad"
+                          value={ticket.price}
+                          disabled
+                          onChangeText={(value) =>
+                            handleTicketChange(ticket.id, "price", value)
+                          }
+                        />
+                      </View>*/}
                       {ticketType === "Paid" && (
                         <>
                           <InputTextWithLabel

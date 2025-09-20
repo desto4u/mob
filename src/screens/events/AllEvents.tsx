@@ -1,4 +1,10 @@
-import { FlatList, ScrollView, StyleSheet, View } from "react-native";
+import {
+  FlatList,
+  RefreshControl,
+  ScrollView,
+  StyleSheet,
+  View,
+} from "react-native";
 import React, { useState } from "react";
 import PageContainer from "../../components/PageContainer";
 import {
@@ -42,7 +48,7 @@ const AllEvents = ({ navigation }) => {
   const handleFilterChange = (field: string) => {
     setfilterData({ ...filterData, [field]: !filterData[field] });
   };
-  const { data, isLoading, isError, refetch } = useQuery({
+  const { data, isLoading, isError, refetch, isFetching } = useQuery({
     queryKey: ["all_events", searchQuery],
     queryFn: async () => {
       let resp = await newApi.get("/api/events/events", {
@@ -85,62 +91,64 @@ const AllEvents = ({ navigation }) => {
     <>
       <PageContainer>
         <SafeAreaView style={{ flex: 1 }}>
-          <ScrollView style={tw``}>
-            <View style={tw` flex-row justify-between`}>
-              <BackButton onPress={() => navigation.goBack()} />
-              <Header font="semi_bold" size={16}>
-                All Events
-              </Header>
-              <AntDesign
-                name="pluscircle"
-                size={24}
-                color={colors.primary}
-                onPress={() => navigation.navigate("CreateEvent")}
-              />
-            </View>
+          <View style={tw` flex-row justify-between`}>
+            <BackButton onPress={() => navigation.goBack()} />
+            <Header font="semi_bold" size={16}>
+              All Events
+            </Header>
+            <AntDesign
+              name="pluscircle"
+              size={24}
+              color={colors.primary}
+              onPress={() => navigation.navigate("CreateEvent")}
+            />
+          </View>
 
-            <TextPrimary
-              size={13}
-              font="medium"
-              color={colors.gray_light}
-              style={tw`mt-5`}
-            >
-              All events created by you
-            </TextPrimary>
-            <View style={tw`flex-row gap-5 mt-5 mb-3`}>
-              <View style={tw`flex-1`}>
-                <InputText
-                  icon={icons.search}
-                  placeholder="Search"
-                  style={tw`border border-[#484848] rounded-[10px] h-[36px]`}
-                  value={searchQuery}
-                  onChangeText={setSearchQuery}
-                />
-              </View>
-            </View>
-            {isLoading ? (
-              <>
-                <BaseText>loading</BaseText>
-              </>
-            ) : (
-              <FlatList
-                data={events}
-                renderItem={({ item }) => (
-                  <View style={tw`my-1 mx-1`}>
-                    <OrgEventItem
-                      onPress={() =>
-                        navigation.navigate("EventDetails", {
-                          eventId: item?.id,
-                        })
-                      }
-                      image={images.event_img2}
-                      item={item}
-                    />
-                  </View>
-                )}
+          <TextPrimary
+            size={13}
+            font="medium"
+            color={colors.gray_light}
+            style={tw`mt-5`}
+          >
+            All events created by you
+          </TextPrimary>
+          <View style={tw`flex-row gap-5 mt-5 mb-3`}>
+            <View style={tw`flex-1`}>
+              <InputText
+                icon={icons.search}
+                placeholder="Search"
+                style={tw`border border-[#484848] rounded-[10px] h-[36px]`}
+                value={searchQuery}
+                onChangeText={setSearchQuery}
               />
-            )}
-          </ScrollView>
+            </View>
+          </View>
+          {isLoading ? (
+            <>
+              <BaseText>loading</BaseText>
+            </>
+          ) : (
+            <FlatList
+              data={events}
+              refreshing={isFetching}
+              refreshControl={
+                <RefreshControl refreshing={isFetching} onRefresh={refetch} />
+              }
+              renderItem={({ item }) => (
+                <View style={tw`my-1 mx-1`}>
+                  <OrgEventItem
+                    onPress={() =>
+                      navigation.navigate("EventDetails", {
+                        eventId: item?.id,
+                      })
+                    }
+                    image={images.event_img2}
+                    item={item}
+                  />
+                </View>
+              )}
+            />
+          )}
         </SafeAreaView>
       </PageContainer>
       <BottomModals open={filterModal} handleClose={toggleFilterModal}>

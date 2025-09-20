@@ -2,6 +2,7 @@ import {
   Alert,
   FlatList,
   RefreshControl,
+  ScrollView,
   StyleSheet,
   Text,
   View,
@@ -26,7 +27,52 @@ import InputTextWithLabel from "../inputs/InputWithLabel";
 import PageLoader from "../Loader";
 import SimpleLoader from "../SimpleLoader";
 import { newApi } from "../../state/newStates/flow";
+import PageContainer from "../PageContainer";
+import BaseText from "../BaseText";
 
+interface Venue {
+  name: string;
+  address: string;
+}
+
+interface EventTicket {
+  id: number;
+  name: string;
+  ticketsAvailable: number;
+  price: number | null;
+}
+
+interface EventData {
+  id: number;
+  userId: string;
+  eventId: string;
+  name: string;
+  description: string;
+  category: null;
+  accessType: string;
+  image: null;
+  venue: Venue;
+  venueImage: any[];
+  startDate: string;
+  endDate: string;
+  ticketType: string;
+  allowVerifierRequests: boolean;
+  isRecurring: boolean;
+  frequency: null;
+  recurrenceEndType: null;
+  recurrenceEndDate: null;
+  recurrenceCount: null;
+  status: string;
+  createdAt: string;
+  updatedAt: string;
+  eventtickets: EventTicket[];
+}
+
+interface EventApiResponse {
+  code: number;
+  message: string;
+  data: EventData;
+}
 const InvitationListing = ({ navigation, eventId }: any) => {
   const [refreshing, setRefreshing] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
@@ -34,7 +80,10 @@ const InvitationListing = ({ navigation, eventId }: any) => {
   const handleCheckboxChange = (checked: boolean) => {
     setIsChecked(checked);
   };
-  const { data, isLoading: isLoadingData } =
+  const {
+    data,
+    isLoading: isLoadingData,
+  }: { data: EventApiResponse | undefined; [key: string]: any } =
     useGetSingleEventPublicQuery(eventId);
   const {
     data: inviteData,
@@ -49,10 +98,9 @@ const InvitationListing = ({ navigation, eventId }: any) => {
   if (isLoadingData || isGettingInvites) return <SimpleLoader />;
   const eventDetails = data?.data;
 
-  console.log(eventDetails?.eventtickets);
+  // console.log(eventDetails?.eventtickets);
 
   const handleSubmit = async () => {
-    // return console.log(eventDetails);
     // return;
     if (!email) {
       Toast.show({
@@ -65,18 +113,22 @@ const InvitationListing = ({ navigation, eventId }: any) => {
       Alert.alert("error", "This event doesn't have a ticket");
       return;
     }
+
     // const tickets = eventDetails.eventtickets;
-    let tik_id = eventDetails?.eventtickets?.id
-      ? eventDetails?.eventtickets?.id.toString()
-      : eventDetails.eventtickets[0].id.toString();
+    // let tik_id = eventDetails?.eventtickets?.id
+    //   ? eventDetails?.eventtickets?.id.toString()
+    //   : eventDetails.eventtickets[0].id.toString();
     // return console.log(tik_id);
+    //
+    return console.log(eventDetails);
+
     const payload = {
       eventId: eventId.toString(),
       userId: email,
       isFree: true,
       ticketId: tik_id,
     };
-    // return console.log(payload);
+    return console.log(payload);
     try {
       const response = await newApi.post("/api/events/send/invitation", {
         ...payload,
@@ -116,7 +168,18 @@ const InvitationListing = ({ navigation, eventId }: any) => {
       setRefreshing(false);
     }
   };
+  // console.log(JSON.stringify(data));
   if (isFetching) return <PageLoader />;
+  // return <></>
+  const event_details = data?.data;
+  const isArray = Array.isArray(event_details?.eventtickets);
+  // return (
+  //   <View style={tw`bg-red-200 pb-12`}>
+  //     <ScrollView style={tw``}>
+  //       <BaseText>{JSON.stringify(eventDetails)}</BaseText>
+  //     </ScrollView>
+  //   </View>
+  // );
   return (
     <View style={tw`px-[5%]`}>
       <View
@@ -142,25 +205,23 @@ const InvitationListing = ({ navigation, eventId }: any) => {
         Previously Invited
       </TextPrimary>
 
-      <FlatList
-        data={inviteList}
-        renderItem={({ item }) => (
-          <View style={tw`my-3`}>
-            <InvitationItem
-              item={item}
-              // onPress={() => navigation.navigate("EventDetails")}
-              image={images.event}
+      {isArray && (
+        <FlatList
+          data={event_details?.eventtickets}
+          renderItem={({ item }) => {
+            <>
+              <BaseText>{JSON.stringify(item)}</BaseText>
+            </>;
+          }}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing || isFetching}
+              onRefresh={onRefresh}
             />
-          </View>
-        )}
-        refreshControl={
-          <RefreshControl
-            refreshing={refreshing || isFetching}
-            onRefresh={onRefresh}
-          />
-        }
-        style={tw``}
-      />
+          }
+          style={tw``}
+        />
+      )}
     </View>
   );
 };
