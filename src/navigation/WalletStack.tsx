@@ -3,15 +3,15 @@ import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useGetUserQuery } from "../state/features/services/users/user";
 import WalletBalance from "../screens/wallet/WalletBalance";
+import SubscriptionBalance from "../screens/wallet/subscriptions/Subscriptions";
 
 const Stack = createNativeStackNavigator();
 
 const WalletStack = () => {
-
   const { data } = useGetUserQuery();
-  const { accountType } = data?.data as any || {};
+  const { accountType } = (data?.data as any) || {};
 
-  console.log(accountType)
+  console.log(accountType);
   return (
     <Stack.Navigator>
       <Stack.Screen
@@ -19,7 +19,11 @@ const WalletStack = () => {
         component={WalletBalance}
         options={{ headerShown: false }}
       />
-     
+      <Stack.Screen
+        name="SubscriptionBalance"
+        component={SubscriptionBalance}
+        options={{ headerShown: false }}
+      />
     </Stack.Navigator>
   );
 };

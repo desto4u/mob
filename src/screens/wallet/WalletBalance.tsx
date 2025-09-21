@@ -83,7 +83,6 @@ export interface TRANSACTTION_API_RESPONSE {
 }
 export default function WalletBalance() {
   let nav = useNavigation();
-  const [currentPage, setCurrentPage] = useState(1);
   const acct = useTokenStore((state) => state.userObject?.data.accountType);
   if (acct?.toLowerCase() == "individual") {
     return <IndWalletBalance />;
@@ -91,39 +90,9 @@ export default function WalletBalance() {
   return <OrgWalletBalance />;
   const limit = 10;
 
-  // console.log(JSON.stringify(query.data?.data[0]));
-
-  if (query.isFetching)
-    return (
-      <PageContainer>
-        <PageLoader />
-      </PageContainer>
-    );
-  // return (
-  //   <PageContainer>
-  //     <HeaderComponent />
-  //   </PageContainer>
-  // );
-  // return (
-  //   <PageContainer>
-  //     <BaseText>{JSON.stringify(acct)}</BaseText>
-  //   </PageContainer>
-  // );
   return (
     <PageContainer padding={0}>
-      <View style={tw`p-4 px-0 flex-1`}>
-        {/*<BaseText>{searchTerm}sss</BaseText>*/}
-        {/*{query.isError && <HeaderComponent />}
-
-        {query.isError && (
-          <MaterialErrorComponent
-            //@ts-ignore
-            message={query?.error?.response?.data?.message}
-            // backButton
-            onRetry={query.refetch}
-          ></MaterialErrorComponent>
-        )}*/}
-      </View>
+      <View style={tw`p-4 px-0 flex-1`}></View>
     </PageContainer>
   );
 }
@@ -153,7 +122,7 @@ export const TransactionItem = ({
             <BaseText
               style={tw`text-2xl font-bold text-gray-900 dark:text-white mb-1`}
             >
-              ₦{amount.toLocaleString()}
+              ₦{amount?.toLocaleString()}
             </BaseText>
 
             {/* Date and channel with material chips style */}
@@ -178,7 +147,7 @@ export const TransactionItem = ({
                 <BaseText
                   style={tw`text-xs font-medium text-blue-600 dark:text-blue-400 capitalize`}
                 >
-                  {paystackResponse.channel}
+                  {paystackResponse?.channel}
                 </BaseText>
               </View>
             </View>
@@ -303,3 +272,17 @@ export const TransactionItem = ({
 //     </View>
 //   );
 // };
+export const GoToSubscriptions = () => {
+  const nav = useNavigation();
+  return (
+    <View style={tw`ml-auto`}>
+      <TouchableOpacity
+        style={tw`bg-primary p-2 rounded-full`}
+        //@ts-ignore*
+        onPress={() => nav.navigate("SubscriptionBalance")}
+      >
+        <BaseText style={tw`  text-white text-sm`}>Subscriptions</BaseText>
+      </TouchableOpacity>
+    </View>
+  );
+};

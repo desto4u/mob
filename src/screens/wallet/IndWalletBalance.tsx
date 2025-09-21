@@ -2,7 +2,11 @@ import { useQuery } from "@tanstack/react-query";
 import { View } from "react-native";
 import { newApi } from "../../state/newStates/flow";
 import PageContainer from "../../components/PageContainer";
-import { TransactionItem, TRANSACTTION_API_RESPONSE } from "./WalletBalance";
+import {
+  GoToSubscriptions,
+  TransactionItem,
+  TRANSACTTION_API_RESPONSE,
+} from "./WalletBalance";
 import Header from "../../components/texts/header";
 import BackButton from "../../components/BackButton";
 import tw from "../../lib/tailwind";
@@ -27,15 +31,15 @@ export default function IndWalletBalance() {
       return resp.data;
     },
   });
+
   if (query.isError) {
     return (
       <PageContainer>
-        <View
-          style={tw`px-4  pb-2 flex flex-row border-b border-neutral-500/20 pb-4  `}
-        >
+        <View style={tw` flex flex-row border-b border-neutral-500/20 pb-4  `}>
           <BackButton onPress={(e) => nav.goBack()} />
           <Header style={tw`mx-auto`}>Transaction History</Header>
-
+          <GoToSubscriptions />
+          {/*<BaseText>Subscriptions</BaseText>*/}
           {/* Balance Card */}
         </View>
         <MaterialErrorComponent
@@ -50,15 +54,16 @@ export default function IndWalletBalance() {
   return (
     <PageContainer>
       <View
-        style={tw`px-4  pb-2 flex flex-row border-b border-neutral-500/20 pb-4  `}
+        style={tw`  pb-2 flex flex-row items-center border-b border-neutral-500/20 pb-4  `}
       >
         <BackButton onPress={(e: any) => nav.goBack()} />
         <Header style={tw`mx-auto`}>Transaction History</Header>
-
+        <GoToSubscriptions />
         {/* Balance Card */}
       </View>
-      <View style={tw`flex-1`}>
+      <View style={tw`flex-1 `}>
         <FlashList
+          contentContainerStyle={tw`p-2 pt-4`}
           onRefresh={query.refetch}
           refreshing={query.isFetching}
           ListEmptyComponent={() => {
