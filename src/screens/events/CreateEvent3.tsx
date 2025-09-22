@@ -124,7 +124,7 @@ const CreateEvent3 = ({ navigation, route }) => {
       console.log(data.data);
       Toast.show({
         type: "success",
-        text1: "event created",
+        text1: "Event Created",
       });
     },
   });
@@ -306,7 +306,7 @@ const CreateEvent3 = ({ navigation, route }) => {
                               handleTicketChange(ticket.id, "price", value)
                             }
                           />
-                          <InputTextWithLabel
+                          {/*<InputTextWithLabel
                             label="No of Plus"
                             placeholder="Enter number of extras allowed"
                             keyboardType="number-pad"
@@ -318,7 +318,7 @@ const CreateEvent3 = ({ navigation, route }) => {
                                 value,
                               )
                             }
-                          />
+                          />*/}
                         </>
                       )}
                       <InputTextWithLabel
