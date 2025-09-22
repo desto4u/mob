@@ -4,6 +4,7 @@ import {
   Pressable,
   StyleSheet,
   Text,
+  TouchableOpacity,
   View,
 } from "react-native";
 import React, { useEffect, useRef } from "react";
@@ -257,112 +258,123 @@ const EventInvitesItem = ({ item, refetch }: ItemProps) => {
         }}
         ref={paystackWebViewRef}
       />
-      <View style={tw`flex-row items-center gap-1`}>
-        <Image
-          source={images.avatar}
-          resizeMode="cover"
-          style={tw`h-[15px] w-[15px] rounded-full`}
-        />
-        <TextPrimary
-          font="montserrat_regular"
-          color={colors.gray_light}
-          size={8}
-        >
-          Frank Rose invited you to...
-        </TextPrimary>
-        <ImageComp image={icons.flower} size={22} style={tw`ml-auto`} />
-      </View>
-      <View style={tw`gap-4 flex-row items-center justify-between`}>
-        <View style={tw`flex-row gap-2 items-center`}>
+      <TouchableOpacity
+        onPress={() => {
+          return nav.navigate("EventDetails", { eventId: item.event.id });
+        }}
+      >
+        <View style={tw`flex-row items-center gap-1`}>
           <Image
-            source={{ uri: item?.event?.image }}
+            source={images.avatar}
             resizeMode="cover"
-            style={tw`h-[72px]  w-[68px] rounded-[10px] `}
+            style={tw`h-[15px] w-[15px] rounded-full`}
           />
-          <View style={tw`gap-[0.5px] items-start`}>
-            <TextPrimary font="montserrat_medium" size={8} color="#3F6BB9">
-              EDUCATION
-            </TextPrimary>
-            <View style={tw`flex-row items-center  `}>
-              <TextPrimary font="montserrat_medium" size={13} color="#fff">
-                {item?.event?.name}
+          <TextPrimary
+            font="montserrat_regular"
+            color={colors.gray_light}
+            size={8}
+          >
+            Frank Rose invited you to...
+          </TextPrimary>
+          <ImageComp image={icons.flower} size={22} style={tw`ml-auto`} />
+        </View>
+        <View style={tw`gap-4 flex-row items-center justify-between`}>
+          <View style={tw`flex-row gap-2 items-center`}>
+            <Image
+              source={{ uri: item?.event?.image }}
+              resizeMode="cover"
+              style={tw`h-[72px]  w-[68px] rounded-[10px] `}
+            />
+            <View style={tw`gap-[0.5px] items-start`}>
+              <TextPrimary font="montserrat_medium" size={8} color="#3F6BB9">
+                EDUCATION
               </TextPrimary>
-            </View>
-            <View style={tw`flex-row items-center gap-2 `}>
-              <AntDesign
-                name="clockcircleo"
-                size={12}
-                color={colors.gray_light}
-              />
-              <TextPrimary
-                font="montserrat_regular"
-                size={13}
-                color={colors.gray_light}
-              >
-                {moment(item?.event?.startDate).format("hh:mm A")} -{" "}
-                {moment(item?.event?.endDate).format("hh:mm A")}
-              </TextPrimary>
-            </View>
-            <View style={tw`flex-row items-center gap-2 `}>
-              <FontAwesome6
-                name="calendar"
-                size={10}
-                color={colors.gray_light}
-              />
-              <TextPrimary
-                font="montserrat_regular"
-                size={13}
-                color={colors.gray_light}
-              >
-                {item?.event?.ticketType}
-              </TextPrimary>
+              <View style={tw`flex-row items-center  `}>
+                <TextPrimary font="montserrat_medium" size={13} color="#fff">
+                  {item?.event?.name}
+                </TextPrimary>
+              </View>
+              <View style={tw`flex-row items-center gap-2 `}>
+                <AntDesign
+                  name="clockcircleo"
+                  size={12}
+                  color={colors.gray_light}
+                />
+                <TextPrimary
+                  font="montserrat_regular"
+                  size={13}
+                  color={colors.gray_light}
+                >
+                  {moment(item?.event?.startDate).format("hh:mm A")} -{" "}
+                  {moment(item?.event?.endDate).format("hh:mm A")}
+                </TextPrimary>
+              </View>
+              <View style={tw`flex-row items-center gap-2 `}>
+                <FontAwesome6
+                  name="calendar"
+                  size={10}
+                  color={colors.gray_light}
+                />
+                <TextPrimary
+                  font="montserrat_regular"
+                  size={13}
+                  color={colors.gray_light}
+                >
+                  {item?.event?.ticketType}
+                </TextPrimary>
+              </View>
             </View>
           </View>
+          <View style={tw``}>
+            <MaterialIcons
+              name="arrow-forward-ios"
+              size={15}
+              style={tw`text-black dark:text-white`}
+            />
+          </View>
         </View>
-        <View style={tw``}>
-          <MaterialIcons
-            name="arrow-forward-ios"
-            size={15}
-            style={tw`text-black dark:text-white`}
-          />
-        </View>
-      </View>
-      <View style={tw`flex-row gap-4 pt-4 border-t border-gray_light mt-4`}>
-        {(item.status === "Pending" || item.status === undefined) && (
+        <View style={tw`flex-row gap-4 pt-4 border-t border-gray_light mt-4`}>
+          {(item.status === "Pending" || item.status === undefined) && (
+            <SmallButton
+              style={tw`h-7 bg-transparent border border-red-600`}
+              onPress={() => handle_decline(item)}
+              disabled={accept_mutation.isPending || decline_mutation.isPending}
+              isLoading={decline_mutation.isPending}
+            >
+              <TextPrimary
+                size={9}
+                font="montserrat_medium"
+                style={tw`text-red-600`}
+              >
+                Decline
+              </TextPrimary>
+            </SmallButton>
+          )}
           <SmallButton
-            style={tw`h-7 bg-transparent border border-red-600`}
-            onPress={() => handle_decline(item)}
-            disabled={accept_mutation.isPending || decline_mutation.isPending}
-            isLoading={decline_mutation.isPending}
+            style={tw`h-7 `}
+            onPress={() => {
+              if (item.status != "Accepted" && item.status != "Declined")
+                return handle_accept(item);
+              return nav.navigate("EventDetails", { eventId: item.event.id });
+            }}
+            isLoading={accept_mutation.isPending}
           >
             <TextPrimary
               size={9}
               font="montserrat_medium"
-              style={tw`text-red-600`}
+              style={tw`text-white`}
             >
-              Decline
+              {item.status == "Accepted" && "View"}
+              {item.status == "Declined" && "View"}
+              {item.status != "Accepted" && item.status != "Declined"
+                ? item.isFree
+                  ? "Accept"
+                  : "Buy Ticket"
+                : null}
             </TextPrimary>
           </SmallButton>
-        )}
-        <SmallButton
-          style={tw`h-7 `}
-          onPress={() => {
-            if (item.status != "Accepted") return handle_accept(item);
-            return nav.navigate("EventDetails", { eventId: item.event.id });
-          }}
-          isLoading={accept_mutation.isPending}
-        >
-          <TextPrimary size={9} font="montserrat_medium" style={tw`text-white`}>
-            {item.status == "Accepted" && "View"}
-            {item.status == "Declined" && "View"}
-            {item.status != "Accepted" && item.status != "Declined"
-              ? item.isFree
-                ? "Free"
-                : "Buy Ticket"
-              : null}
-          </TextPrimary>
-        </SmallButton>
-      </View>
+        </View>
+      </TouchableOpacity>
     </View>
   );
 };
