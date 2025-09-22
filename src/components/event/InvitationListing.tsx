@@ -205,23 +205,25 @@ const InvitationListing = ({ navigation, eventId }: any) => {
         Previously Invited
       </TextPrimary>
 
-      {isArray && (
-        <FlatList
-          data={event_details?.eventtickets}
-          renderItem={({ item }) => {
-            <>
-              <BaseText>{JSON.stringify(item)}</BaseText>
-            </>;
-          }}
-          refreshControl={
-            <RefreshControl
-              refreshing={refreshing || isFetching}
-              onRefresh={onRefresh}
-            />
-          }
-          style={tw``}
-        />
-      )}
+      <View style={tw`flex-1`}>
+        {/*{isArray && (
+          <FlatList
+            data={event_details?.eventtickets}
+            renderItem={({ item }) => {
+              <>
+                <BaseText>{JSON.stringify(item)}</BaseText>
+              </>;
+            }}
+            refreshControl={
+              <RefreshControl
+                refreshing={refreshing || isFetching}
+                onRefresh={onRefresh}
+              />
+            }
+            style={tw``}
+          />
+        )}*/}
+      </View>
     </View>
   );
 };
