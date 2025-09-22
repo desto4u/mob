@@ -101,6 +101,8 @@ const InvitationListing = ({ navigation, eventId }: any) => {
   // console.log(eventDetails?.eventtickets);
 
   const handleSubmit = async () => {
+    // return console.log(eventDetails, "details");
+    const isFree = eventDetails?.ticketType == "Free";
     // return;
     if (!email) {
       Toast.show({
@@ -121,11 +123,10 @@ const InvitationListing = ({ navigation, eventId }: any) => {
     // return console.log(tik_id);
     //
     // return console.log(tik_id);
-
     const payload = {
       eventId: eventId.toString(),
       userId: email,
-      isFree: true,
+      isFree: isFree ? true : isChecked,
       ticketId: tik_id,
     };
     // return console.log(payload);
