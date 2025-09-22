@@ -124,7 +124,7 @@ const CreateEvent3 = ({ navigation, route }) => {
       console.log(data.data);
       Toast.show({
         type: "success",
-        text1: data.data?.message,
+        text1: "event created",
       });
     },
   });
@@ -178,17 +178,7 @@ const CreateEvent3 = ({ navigation, route }) => {
       //   console.log({ ...payload, ticketType, tickets: eventTickets });
 
       console.log("response", response);
-      // if (response?.error) {
-      //   Toast.show({
-      //     type: "error",
-      //     text1: response?.error?.data?.message,
-      //   });
-      //   return;
-      // }
-      // Toast.show({
-      //   type: "success",
-      //   text1: response?.data?.message,
-      // });
+
       navigation.navigate("RequestSuccess", {
         title: response?.data?.message,
         message: response?.data?.message,
