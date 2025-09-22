@@ -255,7 +255,10 @@ const CreateEvent3 = ({ navigation, route }) => {
                         </TextPrimary>
                         {tickets.length > 1 && (
                           <TouchableOpacity
-                            onPress={() => handleRemoveTicket(ticket.id)}
+                            onPress={() => {
+                              handleRemoveTicket(ticket.id);
+                              handleTicketChange(ticket.id, "price", 0);
+                            }}
                           >
                             <AntDesign
                               name="closecircle"
@@ -279,9 +282,10 @@ const CreateEvent3 = ({ navigation, route }) => {
                         placeholder="Enter number of extras allowed"
                         keyboardType="number-pad"
                         value={ticket.plusAllowed}
-                        onChangeText={(value) =>
-                          handleTicketChange(ticket.id, "plusAllowed", value)
-                        }
+                        onChangeText={(value) => {
+                          handleTicketChange(ticket.id, "plusAllowed", value);
+                          handleTicketChange(ticket.id, "price", 0);
+                        }}
                       />
                       {/*<View>
                         <InputTextWithLabel
