@@ -115,12 +115,12 @@ const InvitationListing = ({ navigation, eventId }: any) => {
     }
 
     // const tickets = eventDetails.eventtickets;
-    // let tik_id = eventDetails?.eventtickets?.id
-    //   ? eventDetails?.eventtickets?.id.toString()
-    //   : eventDetails.eventtickets[0].id.toString();
+    let tik_id = eventDetails?.eventtickets?.id
+      ? eventDetails?.eventtickets?.id.toString()
+      : eventDetails.eventtickets[0].id.toString();
     // return console.log(tik_id);
     //
-    return console.log(eventDetails);
+    // return console.log(tik_id);
 
     const payload = {
       eventId: eventId.toString(),
@@ -128,16 +128,16 @@ const InvitationListing = ({ navigation, eventId }: any) => {
       isFree: true,
       ticketId: tik_id,
     };
-    return console.log(payload);
+    // return console.log(payload);
     try {
       const response = await newApi.post("/api/events/send/invitation", {
         ...payload,
       });
 
-      Toast.show({
-        type: "success",
-        text1: "ss",
-      });
+      // Toast.show({
+      //   type: "success",
+      //   text1: "ss",
+      // });
 
       if (response?.error) {
         Alert.alert("error", response?.error?.data?.message);

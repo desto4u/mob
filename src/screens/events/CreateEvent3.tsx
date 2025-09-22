@@ -122,6 +122,10 @@ const CreateEvent3 = ({ navigation, route }) => {
     },
     onSuccess: (data: AxiosResponse) => {
       console.log(data.data);
+      Toast.show({
+        type: "success",
+        text1: data.data?.message,
+      });
     },
   });
   const handleSubmit = async () => {
@@ -181,10 +185,10 @@ const CreateEvent3 = ({ navigation, route }) => {
       //   });
       //   return;
       // }
-      Toast.show({
-        type: "success",
-        text1: response?.data?.message,
-      });
+      // Toast.show({
+      //   type: "success",
+      //   text1: response?.data?.message,
+      // });
       navigation.navigate("RequestSuccess", {
         title: response?.data?.message,
         message: response?.data?.message,
@@ -275,9 +279,10 @@ const CreateEvent3 = ({ navigation, route }) => {
                         label="Ticket Name"
                         placeholder="Enter the ticket name"
                         value={ticket.name}
-                        onChangeText={(value) =>
-                          handleTicketChange(ticket.id, "name", value)
-                        }
+                        onChangeText={(value) => {
+                          handleTicketChange(ticket.id, "name", value);
+                          handleTicketChange(ticket.id, "price", 0);
+                        }}
                       />
                       <InputTextWithLabel
                         label="No of Plus"
