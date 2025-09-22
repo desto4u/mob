@@ -80,7 +80,7 @@ const Invite = ({ navigation, route }: any) => {
 
           <View style={tw` mt-6  flex-1`}>
             {tab === "invitations" && (
-              <View style={tw`flex-1 bg-red-200`}>
+              <View style={tw`flex-1 `}>
                 <InvitationListing navigation={navigation} eventId={eventId} />
               </View>
             )}
