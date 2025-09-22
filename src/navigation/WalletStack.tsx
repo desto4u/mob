@@ -4,6 +4,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useGetUserQuery } from "../state/features/services/users/user";
 import WalletBalance from "../screens/wallet/WalletBalance";
 import SubscriptionBalance from "../screens/wallet/subscriptions/Subscriptions";
+import OrgSubscriptionBalance from "../screens/wallet/subscriptions/OrgSubscriptions";
 
 const Stack = createNativeStackNavigator();
 
@@ -22,6 +23,11 @@ const WalletStack = () => {
       <Stack.Screen
         name="SubscriptionBalance"
         component={SubscriptionBalance}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="OrgSubscriptionBalance"
+        component={OrgSubscriptionBalance}
         options={{ headerShown: false }}
       />
     </Stack.Navigator>

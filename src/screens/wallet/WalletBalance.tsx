@@ -286,3 +286,18 @@ export const GoToSubscriptions = () => {
     </View>
   );
 };
+
+export const GoToOrgSubscriptions = () => {
+  const nav = useNavigation();
+  return (
+    <View style={tw`ml-auto`}>
+      <TouchableOpacity
+        style={tw`bg-primary p-2 rounded-full`}
+        //@ts-ignore*
+        onPress={() => nav.navigate("OrgSubscriptionBalance")}
+      >
+        <BaseText style={tw`  text-white text-sm`}>Subscriptions</BaseText>
+      </TouchableOpacity>
+    </View>
+  );
+};

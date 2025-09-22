@@ -11,7 +11,11 @@ import Header from "../../components/texts/header";
 import { useNavigation } from "@react-navigation/native";
 import { FlashList } from "@shopify/flash-list";
 import { useQuery } from "@tanstack/react-query";
-import { TransactionItem, TRANSACTTION_API_RESPONSE } from "./WalletBalance";
+import {
+  GoToOrgSubscriptions,
+  TransactionItem,
+  TRANSACTTION_API_RESPONSE,
+} from "./WalletBalance";
 import { newApi } from "../../state/newStates/flow";
 import PrimaryButton from "../../components/buttons/PrimaryButtom";
 import MaterialErrorComponent from "../../components/errors/ErrorComp";
@@ -58,7 +62,7 @@ export default function OrgWalletBalance() {
         >
           <BackButton onPress={(e) => nav.goBack()} />
           <Header style={tw`mx-auto`}>Transaction History</Header>
-
+          <GoToOrgSubscriptions />
           {/* Balance Card */}
         </View>
         <MaterialErrorComponent
@@ -77,7 +81,7 @@ export default function OrgWalletBalance() {
       >
         <BackButton onPress={(e) => nav.goBack()} />
         <Header style={tw`mx-auto`}>Transaction History</Header>
-
+        <GoToOrgSubscriptions />
         {/* Balance Card */}
       </View>
       <View style={tw`flex-1 pt-2`}>
