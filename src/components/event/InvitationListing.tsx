@@ -5,6 +5,7 @@ import {
   ScrollView,
   StyleSheet,
   Text,
+  TouchableOpacity,
   View,
 } from "react-native";
 import React, { useState } from "react";
@@ -29,6 +30,7 @@ import SimpleLoader from "../SimpleLoader";
 import { newApi } from "../../state/newStates/flow";
 import PageContainer from "../PageContainer";
 import BaseText from "../BaseText";
+import EventTickets from "./EventTickets";
 
 interface Venue {
   name: string;
@@ -77,6 +79,7 @@ const InvitationListing = ({ navigation, eventId }: any) => {
   const [refreshing, setRefreshing] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
   const [email, setEmail] = useState("");
+  const [selectedTickets, setSelectedTickets] = useState<null | any>(null);
   const handleCheckboxChange = (checked: boolean) => {
     setIsChecked(checked);
   };
@@ -120,9 +123,9 @@ const InvitationListing = ({ navigation, eventId }: any) => {
     let tik_id = eventDetails?.eventtickets?.id
       ? eventDetails?.eventtickets?.id.toString()
       : eventDetails.eventtickets[0].id.toString();
-    // return console.log(tik_id);
-    //
-    // return console.log(tik_id);
+    if (selectedTickets) {
+      tik_id = selectedTickets.id.toString();
+    }
     const payload = {
       eventId: eventId.toString(),
       userId: email,
@@ -182,7 +185,7 @@ const InvitationListing = ({ navigation, eventId }: any) => {
   //   </View>
   // );
   return (
-    <View style={tw`px-[5%]`}>
+    <View style={tw`px-[5%] flex-1`}>
       <View
         style={tw`gap-4 border border-dashed border-[#2E2F36] mb-6 p-4 rounded-[10px]`}
       >
@@ -203,17 +206,48 @@ const InvitationListing = ({ navigation, eventId }: any) => {
         </PrimaryButton>
       </View>
       <TextPrimary color={colors.gray_light} font="medium">
-        Previously Invited
+        Tickets
       </TextPrimary>
 
-      <View style={tw`flex-1`}>
-        {/*{isArray && (
+      <View style={tw`flex-1 `}>
+        {/*<BaseText>{JSON.stringify(eventDetails.eventtickets)}</BaseText>*/}
+        {isArray && (
           <FlatList
             data={event_details?.eventtickets}
+            contentContainerStyle={tw`p-2`}
             renderItem={({ item }) => {
-              <>
-                <BaseText>{JSON.stringify(item)}</BaseText>
-              </>;
+              return (
+                <View>
+                  <TouchableOpacity
+                    onPress={() => {
+                      // console.log(item);
+                      if (selectedTickets?.id === item.id) {
+                        return setSelectedTickets(null);
+                      }
+                      setSelectedTickets(item);
+                    }}
+                    style={[
+                      tw` p-4 rounded-lg border border-gray-200 mb-2 `,
+                      {
+                        borderColor:
+                          selectedTickets?.id === item.id
+                            ? colors.primary
+                            : colors.gray_light,
+                      },
+                    ]}
+                  >
+                    <BaseText font="bold" size={16}>
+                      {item.name}
+                    </BaseText>
+                    <BaseText size={14} color={colors.gray_light}>
+                      {item.price === null ? "Free" : `$${item.price}`}
+                    </BaseText>
+                    <BaseText size={12} color={colors.gray}>
+                      Tickets Available: {item.ticketsAvailable}
+                    </BaseText>
+                  </TouchableOpacity>
+                </View>
+              );
             }}
             refreshControl={
               <RefreshControl
@@ -221,9 +255,9 @@ const InvitationListing = ({ navigation, eventId }: any) => {
                 onRefresh={onRefresh}
               />
             }
-            style={tw``}
+            style={tw`flex-1`}
           />
-        )}*/}
+        )}
       </View>
     </View>
   );
