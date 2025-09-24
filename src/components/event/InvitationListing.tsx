@@ -100,6 +100,7 @@ const InvitationListing = ({ navigation, eventId }: any) => {
 
   if (isLoadingData || isGettingInvites) return <SimpleLoader />;
   const eventDetails = data?.data;
+  const event_details = data?.data;
 
   // console.log(eventDetails?.eventtickets);
   const isArray = Array.isArray(event_details?.eventtickets);
@@ -107,6 +108,7 @@ const InvitationListing = ({ navigation, eventId }: any) => {
   const handleSubmit = async () => {
     // return console.log(eventDetails, "details");
     const isFree = eventDetails?.ticketType == "Free";
+
     // return;
     if (!email) {
       Toast.show({
@@ -116,7 +118,7 @@ const InvitationListing = ({ navigation, eventId }: any) => {
       return;
     }
     if (isArray && !selectedTickets) {
-      Toast.show({ type: "error", text1: "select a ticket" });
+      Toast.show({ type: "error", text1: "Select a ticket" });
       return;
     }
     if (!eventDetails?.eventtickets) {
@@ -181,7 +183,6 @@ const InvitationListing = ({ navigation, eventId }: any) => {
   // console.log(JSON.stringify(data));
   if (isFetching) return <PageLoader />;
   // return <></>
-  const event_details = data?.data;
   // return (
   //   <View style={tw`bg-red-200 pb-12`}>
   //     <ScrollView style={tw``}>
