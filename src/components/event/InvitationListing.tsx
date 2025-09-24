@@ -124,7 +124,7 @@ const InvitationListing = ({ navigation, eventId }: any) => {
       ? eventDetails?.eventtickets?.id.toString()
       : eventDetails.eventtickets[0].id.toString();
     if (selectedTickets) {
-      tik_id = selectedTickets.id.toString();
+      tik_id = selectedTickets?.id?.toString();
     }
     const payload = {
       eventId: eventId.toString(),
