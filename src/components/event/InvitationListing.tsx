@@ -246,7 +246,7 @@ const InvitationListing = ({ navigation, eventId }: any) => {
                       {item.name}
                     </BaseText>
                     <BaseText size={14} color={colors.gray_light}>
-                      {item.price === null ? "Free" : `$${item.price}`}
+                      {item.price === 0 ? "Free" : `$${item.price}`}
                     </BaseText>
                     <BaseText size={12} color={colors.gray}>
                       Tickets Available: {item.ticketsAvailable}
