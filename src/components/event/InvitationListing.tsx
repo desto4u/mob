@@ -102,6 +102,7 @@ const InvitationListing = ({ navigation, eventId }: any) => {
   const eventDetails = data?.data;
 
   // console.log(eventDetails?.eventtickets);
+  const isArray = Array.isArray(event_details?.eventtickets);
 
   const handleSubmit = async () => {
     // return console.log(eventDetails, "details");
@@ -112,6 +113,10 @@ const InvitationListing = ({ navigation, eventId }: any) => {
         type: "error",
         text1: "Email fields are required",
       });
+      return;
+    }
+    if (isArray && !selectedTickets) {
+      Toast.show({ type: "error", text1: "select a ticket" });
       return;
     }
     if (!eventDetails?.eventtickets) {
@@ -126,6 +131,7 @@ const InvitationListing = ({ navigation, eventId }: any) => {
     if (selectedTickets) {
       tik_id = selectedTickets?.id?.toString();
     }
+
     const payload = {
       eventId: eventId.toString(),
       userId: email,
@@ -176,7 +182,6 @@ const InvitationListing = ({ navigation, eventId }: any) => {
   if (isFetching) return <PageLoader />;
   // return <></>
   const event_details = data?.data;
-  const isArray = Array.isArray(event_details?.eventtickets);
   // return (
   //   <View style={tw`bg-red-200 pb-12`}>
   //     <ScrollView style={tw``}>
