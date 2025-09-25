@@ -38,7 +38,7 @@ export default function IndWalletBalance() {
         <View style={tw` flex flex-row border-b border-neutral-500/20 pb-4  `}>
           <BackButton onPress={(e) => nav.goBack()} />
           <Header style={tw`mx-auto`}>Transaction History</Header>
-          <GoToSubscriptions />
+          {/*<GoToSubscriptions />*/}
           {/*<BaseText>Subscriptions</BaseText>*/}
           {/* Balance Card */}
         </View>

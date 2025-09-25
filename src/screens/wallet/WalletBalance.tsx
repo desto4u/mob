@@ -84,9 +84,9 @@ export interface TRANSACTTION_API_RESPONSE {
 export default function WalletBalance() {
   let nav = useNavigation();
   const acct = useTokenStore((state) => state.userObject?.data.accountType);
-  if (acct?.toLowerCase() == "individual") {
-    return <IndWalletBalance />;
-  }
+  // if (acct?.toLowerCase() == "individual") {
+  //   return <IndWalletBalance />;
+  // }
   return <OrgWalletBalance />;
   const limit = 10;
 

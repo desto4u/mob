@@ -117,7 +117,7 @@ export default function OrgWalletBalance() {
       >
         <BackButton onPress={(e) => nav.goBack()} />
         <Header style={tw`mx-auto`}>Transaction History</Header>
-        <GoToOrgSubscriptions />
+        {/*<GoToOrgSubscriptions />*/}
         {/* Balance Card */}
       </View>
       <View style={tw`flex-1 pt-2`}>
