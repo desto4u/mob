@@ -104,7 +104,7 @@ export const TransactionItem = ({
 }) => {
   const { amount, createdAt, status, paystackResponse, reference } =
     transaction;
-  const isSuccessful = status?.toLowerCase() === "success";
+  const isSuccessful = status?.toLowerCase() === "successful";
 
   return (
     <View
@@ -169,20 +169,53 @@ export const TransactionItem = ({
         {/* Divider */}
         <View style={tw`h-px bg-gray-200 dark:bg-gray-700 mb-4`} />
 
-        {/*{transaction.plan && (
-          <View style={tw`mb-4`}>
-            <View style={tw`flex flex-row items-center justify-between`}>
-              <BaseText>Plan</BaseText>
-              <BaseText>{transaction.plan.name}</BaseText>
-            </View>
-            <View style={tw`flex flex-row items-center justify-between`}>
-              <BaseText>Validity</BaseText>
-              <BaseText>{transaction.plan.validity} Month</BaseText>
-            </View>
-          </View>
-        )}*/}
-
         {/* Customer Information Section */}
+        <View style={tw`mb-2`}>
+          <BaseText
+            style={tw`text-lg  font-bold text-gray-500 opacity-60 dark:text-gray-400 uppercase tracking-wide mb-2`}
+          >
+            User Details
+          </BaseText>
+          <View style={tw`bg-gray-50 dark:bg-gray-800/50  rounded-2xl`}>
+            {paystackResponse?.customer && (
+              <View style={tw`mb-2`}>
+                <BaseText
+                  style={tw`text-sm font-medium text-gray-900 dark:text-white`}
+                >
+                  {paystackResponse.customer}
+                </BaseText>
+              </View>
+            )}
+            {paystackResponse?.currency && (
+              <View style={tw`flex-row items-center`}>
+                <BaseText
+                  style={tw`text-xs text-gray-600 dark:text-gray-300 mr-2`}
+                >
+                  Currency:
+                </BaseText>
+                <BaseText
+                  style={tw`text-xs font-medium text-gray-700 dark:text-gray-200 uppercase`}
+                >
+                  {paystackResponse.currency}
+                </BaseText>
+              </View>
+            )}
+            {paystackResponse?.paidAt && (
+              <View style={tw`flex-row items-center mt-1`}>
+                <BaseText
+                  style={tw`text-xs text-gray-600 dark:text-gray-300 mr-2`}
+                >
+                  Paid at:
+                </BaseText>
+                <BaseText
+                  style={tw`text-xs font-medium text-gray-700 dark:text-gray-200`}
+                >
+                  {new Date(paystackResponse.paidAt).toLocaleString()}
+                </BaseText>
+              </View>
+            )}
+          </View>
+        </View>
 
         {/* Footer Section */}
         <View
@@ -204,11 +237,12 @@ export const TransactionItem = ({
 
           {/* Status Badge */}
           <View
-            style={tw`${isSuccessful ? "bg-green-100 dark:bg-green-900/50" : "bg-red-100 dark:bg-red-900/50"} px-3 py-2 rounded-full`}
+            style={tw`${isSuccessful ? "bg-emerald-100 dark:bg-emerald-900" : "bg-red-100 dark:bg-red-900/50"} px-3 py-2 rounded-xl`}
           >
             <BaseText
-              style={tw`text-xs font-bold ${isSuccessful ? "text-green-800 dark:text-green-200" : "text-red-800 dark:text-red-200"} uppercase tracking-wide`}
+              style={tw`text-xs font-bold ${isSuccessful ? "text-emerald-800  dark:text-emerald-200" : "text-red-800 dark:text-red-200"} uppercase tracking-wide`}
             >
+              {/*{JSON.stringify(isSuccessful)}*/}
               {status}
             </BaseText>
           </View>
