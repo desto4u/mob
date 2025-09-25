@@ -20,40 +20,70 @@ import { newApi } from "../../state/newStates/flow";
 import PrimaryButton from "../../components/buttons/PrimaryButtom";
 import MaterialErrorComponent from "../../components/errors/ErrorComp";
 
+interface PaystackResponse {
+  amount: number;
+  paidAt: string;
+  status: string;
+  channel: string;
+  currency: string;
+  customer: string;
+  reference: string;
+}
+
+export interface New_Transaction {
+  id: number;
+  userId: string;
+  type: string;
+  amount: string;
+  status: string;
+  reference: string;
+  description: string;
+  paystackResponse: PaystackResponse;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface TRANSACTION_RESPONSE {
+  message: string;
+  data: New_Transaction[];
+  page: number;
+  limit: number;
+}
+
 export default function OrgWalletBalance() {
   const nav = useNavigation();
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const limit = 10;
 
-  const query = useQuery<TRANSACTTION_API_RESPONSE>({
+  const query = useQuery<TRANSACTION_RESPONSE>({
     queryKey: ["transactions", currentPage, searchTerm],
     queryFn: async () => {
-      if (!searchTerm.trim()) {
-        let resp = await newApi.get(
-          "/api/memberships-subscriptions/get/organization/transactions",
-          {
-            params: {
-              page: currentPage,
-              limit: limit,
-            },
-          },
-        );
-        return resp.data;
-      }
-      let resp = await newApi.get(
-        "/api/memberships-subscriptions/get/organization/transactions/search",
-        {
-          params: {
-            searchParam: searchTerm,
-            page: currentPage,
-            limit: limit,
-          },
+      // if (!searchTerm.trim()) {
+      //   let resp = await newApi.get(
+      //     "/api/memberships-subscriptions/get/organization/transactions",
+      //     {
+      //       params: {
+      //         page: currentPage,
+      //         limit: limit,
+      //       },
+      //     },
+      //   );
+      //   return resp.data;
+      // }
+      let resp = await newApi.get("/api/users/transactions/fetch", {
+        params: {
+          search: searchTerm.trim(),
+          page: currentPage,
+          limit: limit,
         },
-      );
+      });
       return resp.data;
     },
   });
+  // useEffect(() => {
+  //   console.log(JSON.stringify(query.data), "data");
+  // }, [query.data]);
   if (query.isError) {
     return (
       <PageContainer>
@@ -74,6 +104,12 @@ export default function OrgWalletBalance() {
       </PageContainer>
     );
   }
+
+  // return (
+  //   <PageContainer>
+  //     <BaseText>{JSON.stringify(query.data)}</BaseText>
+  //   </PageContainer>
+  // );
   return (
     <PageContainer>
       <View

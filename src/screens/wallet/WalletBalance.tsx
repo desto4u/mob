@@ -19,7 +19,7 @@ import InputTextWithLabel from "../../components/inputs/InputWithLabel";
 import icons from "../../utils/constants/icons";
 import { useTokenStore } from "../../state/newStates/auth";
 import IndWalletBalance from "./IndWalletBalance";
-import OrgWalletBalance from "./OrgWalletBalance";
+import OrgWalletBalance, { New_Transaction } from "./OrgWalletBalance";
 interface Transaction {
   id: number;
   individualId: string;
@@ -96,14 +96,15 @@ export default function WalletBalance() {
     </PageContainer>
   );
 }
+
 export const TransactionItem = ({
   transaction,
 }: {
-  transaction: Transaction;
+  transaction: New_Transaction;
 }) => {
-  const { amount, createdAt, status, paystackResponse, reference, individual } =
+  const { amount, createdAt, status, paystackResponse, reference } =
     transaction;
-  const isSuccessful = status.toLowerCase() === "success";
+  const isSuccessful = status?.toLowerCase() === "success";
 
   return (
     <View
@@ -154,7 +155,7 @@ export const TransactionItem = ({
           </View>
 
           {/* Status icon with material elevation */}
-          <View
+          {/*<View
             style={tw`${isSuccessful ? "bg-green-50 dark:bg-green-900/30" : "bg-red-50 dark:bg-red-900/30"} p-3 rounded-full shadow-sm`}
           >
             <MaterialIcons
@@ -162,41 +163,26 @@ export const TransactionItem = ({
               size={28}
               color={isSuccessful ? "#10B981" : "#EF4444"}
             />
-          </View>
+          </View>*/}
         </View>
 
         {/* Divider */}
         <View style={tw`h-px bg-gray-200 dark:bg-gray-700 mb-4`} />
-        <View style={tw`mb-4`}>
-          <View style={tw`flex flex-row items-center justify-between`}>
-            <BaseText>Plan</BaseText>
-            <BaseText>{transaction.plan.name}</BaseText>
+
+        {/*{transaction.plan && (
+          <View style={tw`mb-4`}>
+            <View style={tw`flex flex-row items-center justify-between`}>
+              <BaseText>Plan</BaseText>
+              <BaseText>{transaction.plan.name}</BaseText>
+            </View>
+            <View style={tw`flex flex-row items-center justify-between`}>
+              <BaseText>Validity</BaseText>
+              <BaseText>{transaction.plan.validity} Month</BaseText>
+            </View>
           </View>
-          <View style={tw`flex flex-row items-center justify-between`}>
-            <BaseText>Validity</BaseText>
-            <BaseText>{transaction.plan.validity} Month</BaseText>
-          </View>
-        </View>
+        )}*/}
 
         {/* Customer Information Section */}
-        <View style={tw`mb-4`}>
-          <BaseText
-            style={tw`text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-2`}
-          >
-            User Details
-          </BaseText>
-          <BaseText
-            style={tw`text-lg font-semibold text-gray-900 dark:text-white mb-1`}
-          >
-            {individual.firstName} {individual.lastName}
-          </BaseText>
-          <BaseText style={tw`text-sm text-gray-600 dark:text-gray-300 mb-1`}>
-            {individual.email}
-          </BaseText>
-          <BaseText style={tw`text-sm text-gray-600 dark:text-gray-300`}>
-            {individual.phoneNumber}
-          </BaseText>
-        </View>
 
         {/* Footer Section */}
         <View
@@ -232,46 +218,6 @@ export const TransactionItem = ({
   );
 };
 
-// const TransactionItem = ({ transaction }: { transaction: Transaction }) => {
-//   const { amount, createdAt, status, paystackResponse, reference } =
-//     transaction;
-//   const isSuccessful = status.toLowerCase() === "success";
-
-//   return (
-//     <View
-//       style={tw`bg-white dark:bg-[#1C1C1E] rounded-2xl p-4 mb-3 border border-gray-800 shadow-sm`}
-//     >
-//       <View style={tw`flex-row justify-between items-center`}>
-//         <View style={tw`flex-1`}>
-//           <BaseText style={tw`text-base font-semibold `}>₦{amount}</BaseText>
-//           <BaseText style={tw`text-xs text-gray-400 mt-1`}>
-//             {new Date(createdAt).toLocaleDateString()} •{" "}
-//             {paystackResponse.channel}
-//           </BaseText>
-//         </View>
-//         <MaterialIcons
-//           name={isSuccessful ? "check-circle" : "cancel"}
-//           size={24}
-//           color={isSuccessful ? "#4CAF50" : "#F44336"}
-//         />
-//       </View>
-
-//       <View style={tw`mt-3`}>
-//         <BaseText style={tw`text-xs text-gray-400`}>Ref: {reference}</BaseText>
-//         <BaseText style={tw`text-xs text-gray-400 mt-1`}>
-//           Status:{" "}
-//           <BaseText
-//             style={tw`text-xs ${
-//               isSuccessful ? "text-green-500" : "text-red-500"
-//             }`}
-//           >
-//             {status.toUpperCase()}
-//           </BaseText>
-//         </BaseText>
-//       </View>
-//     </View>
-//   );
-// };
 export const GoToSubscriptions = () => {
   const nav = useNavigation();
   return (
