@@ -47,6 +47,7 @@ import ChooseDate from "../../components/event/ChooseDate";
 import { uploadImage } from "../../utils/helpers";
 import { AntDesign } from "@expo/vector-icons";
 import CenterModal from "../../components/modals/CenterModal";
+import BaseText from "../../components/BaseText";
 
 const AddCard = ({ navigation, route }: any) => {
   const cardId = route?.params?.cardId;
@@ -207,8 +208,10 @@ const AddCard = ({ navigation, route }: any) => {
         >
           <View style={tw` flex-row justify-between`}>
             <BackButton onPress={() => navigation.goBack()} />
-            <Header font="semi_bold" size={16}>
-              Add Card
+            <Header font="semi_bold" size={20}>
+              <BaseText style={tw`text-lg font-bold`}>
+                Digitize your card
+              </BaseText>
             </Header>
             <View />
           </View>

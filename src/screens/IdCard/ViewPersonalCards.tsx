@@ -233,32 +233,35 @@ const ViewPersonalCards = ({ navigation }) => {
                     <View
                       style={tw`flex-row justify-between items-center mb-3`}
                     >
-                      <View style={tw`flex-1`}>
-                        <Header
+                      <View style={tw``}>
+                        {/*<Header
                           size={14}
                           font="semi_bold"
                           style={tw`text-gray-700 ${colorScheme === "dark" ? "text-gray-200" : "text-gray-700"}`}
+                        >*/}
+                        <BaseText
+                          style={tw`capitalize w-full  mb-2 text-xl font-bold`}
                         >
                           {item?.issuingOrganization}
-                        </Header>
-                        <TextPrimary
-                          size={12}
-                          color={colors.gray_light}
-                          style={tw`mt-1`}
-                        >
-                          {item?.designation}
-                        </TextPrimary>
-                      </View>
-                      <View
-                        style={tw`px-2 py-1 rounded-full ${isActive ? "bg-green-800" : "bg-red-700"}`}
-                      >
-                        <TextPrimary
-                          size={10}
-                          font="medium"
-                          color={isActive ? "#059669" : "#DC2626"}
-                        >
-                          {isActive ? "ACTIVE" : "EXPIRED"}
-                        </TextPrimary>
+                        </BaseText>
+                        {/*</Header>*/}
+                        <View style={tw`flex flex-row  w-full`}>
+                          <View style={tw` mr-auto`}>
+                            <BaseText style={tw`text-lg `}>
+                              {item?.designation}
+                            </BaseText>
+                          </View>
+                          <View
+                            style={tw`px-2 ml-auto  py-1 rounded-full ${isActive ? "bg-green-800" : "bg-red-700"}`}
+                          >
+                            <BaseText
+                              color={isActive ? "#059669" : "#DC2626"}
+                              style={tw`text-white text-xs`}
+                            >
+                              {isActive ? "ACTIVE" : "EXPIRED"}
+                            </BaseText>
+                          </View>>
+                        </View>
                       </View>
                     </View>
 

@@ -182,7 +182,7 @@ const ViewCards = ({ navigation }) => {
             <View style={tw` flex-row justify-between`}>
               <BackButton onPress={() => navigation.goBack()} />
               <Header font="semi_bold" size={16}>
-                My Card
+                Organization-Issued Cards
               </Header>
               <AntDesign
                 name="pluscircle"
@@ -198,7 +198,7 @@ const ViewCards = ({ navigation }) => {
               color={colors.gray_light}
               style={tw`mt-5`}
             >
-              All your organisation cards
+              All your organisation-issued cards
             </TextPrimary>
 
             <View style={tw`flex-row gap-5 mt-5`}>

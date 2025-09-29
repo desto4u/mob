@@ -221,7 +221,7 @@ const UploadDocumentInd = ({ navigation }: any) => {
                 <BaseText size={13} style={tw`pb-3`}>
                   Verify Account{" "}
                 </BaseText>
-                {imageUrl.trim() && (
+                {imageUrl?.trim() && (
                   <View style={tw`flex-row`}>
                     <BaseText
                       style={tw`bg-purple-200 p-2 rounded-md  text-xs `}

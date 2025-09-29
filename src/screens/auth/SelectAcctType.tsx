@@ -51,7 +51,7 @@ const SelectAcctType = ({ navigation }) => {
         </View>
         <View className="mt-6 ">
           <BaseText style={tw`mx-auto text-center`}>
-            <GradientText text="What are you signing up as ?" />
+            <GradientText text="Welcome!    " />
           </BaseText>
 
           <View className="mt-4 text-center mx-auto">
@@ -61,7 +61,7 @@ const SelectAcctType = ({ navigation }) => {
               weight={500}
               style={tw`mx-auto text-center`}
             >
-              Welcome on board, choose the type of user you want to be
+              Sign up as an Individual or an Organization to continue.
             </BaseText>
           </View>
         </View>

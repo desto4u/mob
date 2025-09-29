@@ -68,11 +68,14 @@ const ChangePassword = ({ navigation, route }) => {
     console.warn(data);
     setIsLoading(true);
     try {
-      const response = await axios.post(`${BaseUrl}/users/auth/password/reset`, {
-        ...data,
-        ...formData,
-        otpCode: otp.join(""),
-      });
+      const response = await axios.post(
+        `${BaseUrl}/users/auth/password/reset`,
+        {
+          ...data,
+          ...formData,
+          otpCode: otp.join(""),
+        },
+      );
       navigation.navigate("SignIn");
       Toast.show({
         type: "success",
@@ -128,7 +131,7 @@ const ChangePassword = ({ navigation, route }) => {
             {otp.map((value, index) => (
               <TextInput
                 key={index}
-                style={[styles.otpInput,tw`text-black dark:text-white`]}
+                style={[styles.otpInput, tw`text-black dark:text-white`]}
                 keyboardType="numeric"
                 maxLength={1}
                 value={value}
@@ -160,7 +163,7 @@ const ChangePassword = ({ navigation, route }) => {
           </View>
 
           {/* Confirm password input */}
-          <View>
+          <View style={tw`mt-5`}>
             <Controller
               control={control}
               name="confirmPassword"
