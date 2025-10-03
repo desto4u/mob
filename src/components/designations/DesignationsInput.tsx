@@ -27,6 +27,7 @@ export default function MemberDesignations({ role, onChange }: any) {
   const [value, setValue] = useState<DESIGNATION>(null);
   const [showModal, setModal] = useState<boolean>(false);
   const [designation, setDesignation] = useState<string>("");
+  const member = {};
   useEffect(() => {
     if (value) {
       onChange(value.name);
@@ -58,15 +59,13 @@ export default function MemberDesignations({ role, onChange }: any) {
   }, [designations.isError, designations.error]);
 
   const designations_data =
-    designations.data?.data
-      .filter((e) => e.name !== member?.designation)
-      .map((e) => {
-        return {
-          label: e.name,
-          value: e.name,
-          ...e,
-        };
-      }) || [];
+    designations.data?.data.map((e) => {
+      return {
+        label: e.name,
+        value: e.name,
+        ...e,
+      };
+    }) || [];
   return (
     <View style={tw`flex-row flex items-center`}>
       <Dropdown
