@@ -18,7 +18,7 @@ import { DateInput } from "../shared/DateInput";
 import moment from "moment";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 
-const OrganizationDataForm = ({navigation}:any) => {
+const OrganizationDataForm = ({ navigation }: any) => {
   const { data, isLoading: isGettingUser, refetch } = useGetUserQuery();
   const {
     firstName,
@@ -82,7 +82,7 @@ const OrganizationDataForm = ({navigation}:any) => {
         companyEmail,
         username,
         phoneNumber,
-        dateOfBirth:moment(date).format('YYYY-MM-DD'),
+        dateOfBirth: moment(date).format("YYYY-MM-DD"),
         aboutCompany,
         natureOfOrganization: accessType,
         companyAddress: {
@@ -104,7 +104,7 @@ const OrganizationDataForm = ({navigation}:any) => {
       });
 
       await refetch();
-      navigation.goBack()
+      navigation.goBack();
     } catch (error: any) {
       Alert.alert("Error", error.message);
     }
@@ -131,7 +131,7 @@ const OrganizationDataForm = ({navigation}:any) => {
           label="Company Email Address"
           placeholder={companyEmail}
           value={companyEmail}
-          editable={false}
+          editable={true}
           onChangeText={(text) => setCompanyEmail(text)}
         />
         <TextPrimary>Company Address</TextPrimary>
