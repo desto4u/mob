@@ -61,6 +61,7 @@ const MembershipPendingRequest = ({ navigation }: any) => {
     membershipId: parseInt(selected?.id),
     status: "declined",
     message: reasonForDecline,
+    reason: reasonForDecline,
   };
 
   const [declineRequest, { isLoading: isDeclining }] =
