@@ -33,6 +33,7 @@ const InviteNewMember = ({ navigation }: any) => {
     console.log("invitepage:", data.data.email);
   }, []);
   let data = query.data;
+  const { colorScheme } = useColorScheme();
 
   const [individualInfo, setindividualInfo] = useState("");
   const [designation, setDesignation] = useState("");
@@ -169,6 +170,7 @@ export default InviteNewMember;
 import Modal from "react-native-modal";
 import { newApi } from "../../state/newStates/flow";
 import { useQuery } from "@tanstack/react-query";
+import { useColorScheme } from "nativewind";
 
 interface API_RESPONSE {
   code: number;
@@ -287,24 +289,28 @@ let MemberDesignations = ({ role, onChange }: any) => {
           </PrimaryButton>
         </View>
       </Modal>
-      <Dropdown
-        style={tw`flex-1 p-3  rounded-lg bg-light dark:bg-gray_dark mb-2 `}
-        placeholder="Select Role"
-        activeColor={colors.primary}
-        containerStyle={tw`bg-red-200 dark:bg-gray_dark bg-light shadow-xl`}
-        itemContainerStyle={tw``}
-        labelField={"label"}
-        valueField={"value"}
-        search
-        dropdownPosition="top"
-        searchPlaceholder="Search Roles"
-        itemTextStyle={tw`text-sm text-black`}
-        data={designations_data || []}
-        value={value?.value || ""}
-        onChange={(item) => {
-          setValue(item);
-        }}
-      />
+      <View style={tw`flex-1`}>
+        <Dropdown
+          style={tw`flex-1 p-3   rounded-lg bg-light dark:bg-gray_dark mb-2 `}
+          placeholder="Select Role"
+          activeColor={colors.primary}
+          containerStyle={tw`bg-red-200 dark:bg-gray_dark bg-light shadow-xl`}
+          itemContainerStyle={tw``}
+          labelField={"label"}
+          valueField={"value"}
+          // search
+          searchPlaceholderTextColor={colors.gray}
+          dropdownPosition="bottom"
+          selectedTextStyle={tw`dark:text-white text-black`}
+          searchPlaceholder="Search Roles"
+          itemTextStyle={tw`text-sm dark:text-white text-black`}
+          data={designations_data || []}
+          value={value?.value || ""}
+          onChange={(item) => {
+            setValue(item);
+          }}
+        />
+      </View>
       <TouchableOpacity
         onPress={(e) => setModal(true)}
         style={tw` h-8 w-8 justify-center items-center bg-primary ml-2 rounded-full`}
