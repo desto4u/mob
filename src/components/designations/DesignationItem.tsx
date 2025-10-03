@@ -155,6 +155,7 @@ export default function DesignationItem({
                   client.invalidateQueries({
                     queryKey: ["designations"],
                   });
+                  setIsVisible(false);
                   return await resp.data;
                 } catch (err) {
                   console.log(err);
