@@ -29,6 +29,8 @@ import { useRoute } from "@react-navigation/native";
 import moment from "moment";
 import { Dropdown } from "react-native-element-dropdown";
 import { useQuery } from "@tanstack/react-query";
+import { useSelector } from "react-redux";
+import { useGetUserQuery } from "../../state/features/services/users/user";
 interface API_RESPONSE {
   code: number;
   message: string;
@@ -45,6 +47,8 @@ interface DESIGNATION {
 }
 export default function EditMember({ navigation, route }: any) {
   let { params } = useRoute();
+  const data = useGetUserQuery();
+  const user = data?.data?.data;
   const { member } = useMemberEdit();
   let initial_designation = {
     label: member?.designation,
@@ -59,14 +63,21 @@ export default function EditMember({ navigation, route }: any) {
     member?.organizationEmail,
   );
   const [showStatusModal, setShowStatusModal] = useState(false);
-  useEffect(() => {
-    console.log(member?.designation);
-  }, []);
+
   const [inviteMember, { isLoading }] = useInviteMemberMutation();
   const org_id = member?.organizationId;
-  // console.log(member, "member");
+  const acct_type = user.accountType as string;
+  const isInd = acct_type.toLowerCase() == "individual" ? true : false;
+  console.log(member, "acct_type");
   const sendRequest = async () => {
-    console.log(member);
+    const payLoad = {
+      membershipId: String(member?.id),
+      status: status, // declined, inactive or active
+      memberId: String(memberId),
+      role: designation.value,
+    };
+    // return console.log(payLoad);
+    // console.log(member);
     if (!individualInfo.trim()) {
       Alert.alert(
         "Validation Error",
@@ -75,16 +86,16 @@ export default function EditMember({ navigation, route }: any) {
       return false;
     }
     try {
-      const response = await newApi.put(
-        "/api/memberships-subscriptions/organization/update/membership/status",
-        {
-          membershipId: String(member?.id),
-          status: status, // declined, inactive or active
-          memberId: String(memberId),
-          role: designation.value,
-          // organizationEmail: organizationEmail, // Not Required
-        },
-      );
+      const url = isInd
+        ? "/api/memberships-subscriptions/individual/update/membership/status"
+        : "/api/memberships-subscriptions/organization/update/membership/status";
+      const response = await newApi.put(url, {
+        membershipId: String(member?.id),
+        status: status, // declined, inactive or active
+        memberId: String(memberId),
+        role: designation.value,
+        // organizationEmail: organizationEmail, // Not Required
+      });
       if (response?.error) {
         return Toast.show({
           type: "error",
@@ -115,8 +126,15 @@ export default function EditMember({ navigation, route }: any) {
 
   let status_list = ["active", "declined"];
   const designations = useQuery<API_RESPONSE>({
-    queryKey: ["invite designations", org_id],
+    queryKey: ["invite designations", org_id, isInd],
     queryFn: async () => {
+      console.log(isInd, "query");
+      if (!isInd) {
+        let resp = await newApi.get(
+          "/api/memberships-subscriptions/designations",
+        );
+        return resp.data;
+      }
       let resp = await newApi.get(
         "/api/memberships-subscriptions/organization/designations?organizationId=" +
           org_id,
