@@ -80,6 +80,7 @@ export default function ViewDesignations() {
             console.log(item);
             return <DesignationItem {...item.item} key={item.item.id} />;
           }}
+          f
           style={tw`flex-1`}
           contentContainerStyle={tw`gap-2`}
         >
@@ -95,7 +96,7 @@ export default function ViewDesignations() {
         }}
       >
         <View
-          style={tw`elevation-2 bg-white p-3 px-4 gap-2 py-8  pt-4 rounded-xl`}
+          style={tw`elevation-2 dark:bg-slate-900 bg-white p-3 px-4 gap-2 py-8  pt-4 rounded-xl`}
         >
           <View style={tw`flex-row`}>
             <TouchableOpacity
