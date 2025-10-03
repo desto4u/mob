@@ -20,8 +20,8 @@ const Support = ({ navigation }: any) => {
 
   console.log("support", supportData[0]);
 
-  const email = supportData[0].email;
-  const phone = supportData[0].phoneNumber;
+  const email = supportData[0]?.email;
+  const phone = supportData[0]?.phoneNumber;
 
   return (
     <PageContainer>
