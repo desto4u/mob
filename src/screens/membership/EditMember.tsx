@@ -63,7 +63,8 @@ export default function EditMember({ navigation, route }: any) {
     console.log(member?.designation);
   }, []);
   const [inviteMember, { isLoading }] = useInviteMemberMutation();
-
+  const org_id = member?.organizationId;
+  // console.log(member, "member");
   const sendRequest = async () => {
     console.log(member);
     if (!individualInfo.trim()) {
@@ -114,10 +115,11 @@ export default function EditMember({ navigation, route }: any) {
 
   let status_list = ["active", "declined"];
   const designations = useQuery<API_RESPONSE>({
-    queryKey: ["invite designations"],
+    queryKey: ["invite designations", org_id],
     queryFn: async () => {
       let resp = await newApi.get(
-        "/api/memberships-subscriptions/designations",
+        "/api/memberships-subscriptions/organization/designations?organizationId=" +
+          org_id,
       );
       return resp.data;
     },

@@ -138,7 +138,7 @@ const OrganizationDetails = ({ navigation, route }: any) => {
                 placeholder="Select Role"
                 activeColor={colors.primary}
                 containerStyle={tw` dark:bg-gray_dark bg-light shadow-xl`}
-                itemContainerStyle={tw``}
+                // itemContainerStyle={tw``}
                 labelField={"label"}
                 valueField={"value"}
                 search
