@@ -33,6 +33,8 @@ import {
 } from "../../state/features/services/membership/membership";
 import OrgMembershipItem from "../../components/membership/OrgMembershipItem";
 import MembershipListing from "../../components/membership/MembershipListing";
+import { useGetUserQuery } from "../../state/features/services/users/user";
+import { useTokenStore } from "../../state/newStates/auth";
 
 const OrgMembershipList = ({ navigation }: any) => {
   const insets = useSafeAreaInsets();
@@ -40,7 +42,10 @@ const OrgMembershipList = ({ navigation }: any) => {
   const [tab, setTab] = useState<"membership" | "request" | "invites">(
     "membership",
   );
-
+  const user_obj = useTokenStore((state) => state.userObject?.data);
+  const isClose =
+    user_obj?.natureOfOrganization == "Open" ||
+    user_obj?.natureOfOrganization == "Semi-Open";
   return (
     <PageContainer padding="0%">
       <View style={tw`flex-1  pb-10`}>
@@ -77,20 +82,22 @@ const OrgMembershipList = ({ navigation }: any) => {
                 Memebership
               </TextPrimary>
             </Pressable>
-            <Pressable
-              style={[
-                tw` flex-1 items-center rounded-[20px] py-3`,
-                tab === "request" ? { backgroundColor: "#242EF2" } : {},
-              ]}
-              onPress={() => setTab("request")}
-            >
-              <TextPrimary
-                size={11}
-                style={[tab === "request" ? { color: "#fff" } : {}]}
+            {isClose && (
+              <Pressable
+                style={[
+                  tw` flex-1 items-center rounded-[20px] py-3`,
+                  tab === "request" ? { backgroundColor: "#242EF2" } : {},
+                ]}
+                onPress={() => setTab("request")}
               >
-                Pending Requests
-              </TextPrimary>
-            </Pressable>
+                <TextPrimary
+                  size={11}
+                  style={[tab === "request" ? { color: "#fff" } : {}]}
+                >
+                  Pending Requests
+                </TextPrimary>
+              </Pressable>
+            )}
             <Pressable
               style={[
                 tw` flex-1 items-center rounded-[20px] py-3`,
