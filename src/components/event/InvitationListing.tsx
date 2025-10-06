@@ -31,6 +31,7 @@ import { newApi } from "../../state/newStates/flow";
 import PageContainer from "../PageContainer";
 import BaseText from "../BaseText";
 import EventTickets from "./EventTickets";
+import { FlashList } from "@shopify/flash-list";
 
 interface Venue {
   name: string;
@@ -192,25 +193,6 @@ const InvitationListing = ({ navigation, eventId }: any) => {
   // );
   return (
     <View style={tw`px-[5%] flex-1`}>
-      <View
-        style={tw`gap-4 border border-dashed border-[#2E2F36] mb-6 p-4 rounded-[10px]`}
-      >
-        <TextPrimary color={colors.gray_light} font="medium">
-          Invite User
-        </TextPrimary>
-        <InputTextWithLabel
-          placeholder="Enter user email or ID"
-          value={email}
-          onChangeText={(text) => setEmail(text)}
-        />
-        <View style={tw`flex-row items-center gap-2`}>
-          <Checkbox checked={isChecked} onChange={handleCheckboxChange} />
-          <TextPrimary size={11}>Mark event as FREE for user</TextPrimary>
-        </View>
-        <PrimaryButton loading={isLoading} onPress={handleSubmit}>
-          Invite Users(s)
-        </PrimaryButton>
-      </View>
       <TextPrimary color={colors.gray_light} font="medium">
         Tickets
       </TextPrimary>
@@ -218,43 +200,132 @@ const InvitationListing = ({ navigation, eventId }: any) => {
       <View style={tw`flex-1 `}>
         {/*<BaseText>{JSON.stringify(eventDetails.eventtickets)}</BaseText>*/}
         {isArray && (
-          <FlatList
-            data={event_details?.eventtickets}
-            contentContainerStyle={tw`p-2`}
-            renderItem={({ item }) => {
+          <FlashList
+            ListHeaderComponent={() => {
               return (
-                <View>
-                  <TouchableOpacity
-                    onPress={() => {
-                      // console.log(item);
-                      if (selectedTickets?.id === item.id) {
-                        return setSelectedTickets(null);
-                      }
-                      setSelectedTickets(item);
-                    }}
-                    style={[
-                      tw` p-4 rounded-lg border border-gray-200 mb-2 `,
-                      {
-                        borderColor:
-                          selectedTickets?.id === item.id
-                            ? colors.primary
-                            : colors.gray_light,
-                      },
-                    ]}
-                  >
-                    <BaseText font="bold" size={16}>
-                      {item.name}
-                    </BaseText>
-                    <BaseText size={14} color={colors.gray_light}>
-                      price: {item.price == 0 ? "Free" : `${item.price}`}
-                    </BaseText>
-                    <BaseText size={12} color={colors.gray}>
-                      Tickets Available: {item.ticketsAvailable}
-                    </BaseText>
-                  </TouchableOpacity>
+                <View
+                  style={tw`gap-4 border border-dashed border-[#2E2F36] mb-6 p-4 rounded-[10px]`}
+                >
+                  <TextPrimary color={colors.gray_light} font="medium">
+                    Invite User
+                  </TextPrimary>
+                  <InputTextWithLabel
+                    placeholder="Enter user email or ID"
+                    value={email}
+                    onChangeText={(text) => setEmail(text)}
+                  />
+                  <View style={tw`flex-row items-center gap-2`}>
+                    <Checkbox
+                      checked={isChecked}
+                      onChange={handleCheckboxChange}
+                    />
+                    <TextPrimary size={11}>
+                      Mark event as FREE for user
+                    </TextPrimary>
+                  </View>
+                  <PrimaryButton loading={isLoading} onPress={handleSubmit}>
+                    Invite Users(s)
+                  </PrimaryButton>
                 </View>
               );
             }}
+            estimatedItemSize={200}
+            data={event_details?.eventtickets}
+            contentContainerStyle={tw`p-2`}
+            renderItem={({ item }) => {
+              // --- Redesigned Ticket Card ---
+              const isSelected = selectedTickets?.id === item.id;
+              return (
+                <TouchableOpacity
+                  onPress={() => {
+                    if (isSelected) {
+                      return setSelectedTickets(null);
+                    }
+                    setSelectedTickets(item);
+                  }}
+                  style={[tw`mb-4`]}
+                  activeOpacity={0.92}
+                >
+                  <View
+                    style={[
+                      tw` rounded-xl border `,
+                      {
+                        borderColor: isSelected ? colors.primary : "#E5E7EB",
+                        // elevation: isSelected ? 4 : 2,
+                        // shadowColor: "#000",
+                        // shadowOffset: { width: 0, height: 2 },
+                        // shadowOpacity: 0.12,
+                        // shadowRadius: 4,
+                      },
+                    ]}
+                  >
+                    {/* Decorative top edge */}
+                    <View
+                      style={tw`flex-row justify-between items-center px-5 pt-4`}
+                    >
+                      <View style={tw`flex-row items-center`}>
+                        <View
+                          style={tw`w-3 h-3 rounded-full bg-gray-200 mr-2`}
+                        />
+                        <BaseText font="bold" size={18} color={colors.primary}>
+                          {item.name}
+                        </BaseText>
+                      </View>
+                      {isSelected && (
+                        <View
+                          style={tw`bg-[${colors.primary}] px-2 py-1 rounded-full`}
+                        >
+                          <BaseText size={12} style={tw`text-white`}>
+                            Selected
+                          </BaseText>
+                        </View>
+                      )}
+                    </View>
+                    {/* Divider with dashed line and notches */}
+                    <View style={tw`flex-row items-center mt-3 mb-2 px-5`}>
+                      <View style={tw`w-2 h-2 rounded-full bg-gray-200`} />
+                      <View
+                        style={tw`flex-1 border-t border-dashed border-gray-300 mx-2`}
+                      />
+                      <View style={tw`w-2 h-2 rounded-full bg-gray-200`} />
+                    </View>
+                    {/* Ticket details */}
+                    <View style={tw`px-5 pb-4`}>
+                      <View
+                        style={tw`flex-row justify-between items-center mb-2`}
+                      >
+                        <BaseText size={15} color={colors.gray_light}>
+                          Price
+                        </BaseText>
+                        <BaseText
+                          font="bold"
+                          size={16}
+                          color={
+                            item.price == 0 ? colors.primary : colors.gray_dark
+                          }
+                        >
+                          {item.price == 0 || item.price === null
+                            ? "Free"
+                            : `$${item.price}`}
+                        </BaseText>
+                      </View>
+                      <View
+                        style={tw`flex-row justify-between items-center mb-2`}
+                      >
+                        <BaseText size={15} color={colors.gray_light}>
+                          Tickets Available
+                        </BaseText>
+                        <BaseText size={15} color={colors.gray}>
+                          {item.ticketsAvailable}
+                        </BaseText>
+                      </View>
+                      {/* Add more details if needed */}
+                    </View>
+                  </View>
+                </TouchableOpacity>
+              );
+            }}
+            extraData={selectedTickets}
             refreshControl={
               <RefreshControl
                 refreshing={refreshing || isFetching}
