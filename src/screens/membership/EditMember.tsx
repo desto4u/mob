@@ -70,14 +70,13 @@ export default function EditMember({ navigation, route }: any) {
   const isInd = acct_type.toLowerCase() == "individual" ? true : false;
   console.log(member, "acct_type");
   const sendRequest = async () => {
+    // return console.log(member);
     const payLoad = {
       membershipId: String(member?.id),
       status: status, // declined, inactive or active
       memberId: String(memberId),
       role: designation.value,
     };
-    // return console.log(payLoad);
-    // console.log(member);
     if (!individualInfo.trim()) {
       Alert.alert(
         "Validation Error",
@@ -86,16 +85,18 @@ export default function EditMember({ navigation, route }: any) {
       return false;
     }
     try {
+      const designation_resp = await newApi.put(
+        "/api/memberships-subscriptions/update/membership/designation",
+        {
+          individualId: member?.individualId,
+          organizationId: org_id,
+          designation: designation.value,
+        },
+      );
       const url = isInd
         ? "/api/memberships-subscriptions/individual/update/membership/status"
         : "/api/memberships-subscriptions/organization/update/membership/status";
-      const response = await newApi.put(url, {
-        membershipId: String(member?.id),
-        status: status, // declined, inactive or active
-        memberId: String(memberId),
-        role: designation.value,
-        // organizationEmail: organizationEmail, // Not Required
-      });
+      const response = await newApi.put(url, payLoad);
       if (response?.error) {
         return Toast.show({
           type: "error",
