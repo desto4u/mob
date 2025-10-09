@@ -32,6 +32,7 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import BottomModals from "../../components/modals/BottomModals";
 import PrimaryButton from "../../components/buttons/PrimaryButtom";
 import Toast from "react-native-toast-message";
+import { newApi } from "../../state/newStates/flow";
 
 const ViewPersonalCardDetails = ({ navigation, route }: any) => {
   const cardId = route?.params?.cardId;
@@ -53,16 +54,16 @@ const ViewPersonalCardDetails = ({ navigation, route }: any) => {
 
   const handleSubmit = async () => {
     try {
-      const response = await deleteCard({
-        id: cardId,
-      });
+      const response = await newApi.delete(
+        "/api/idcards/personal/cards?id=" + cardId,
+      );
 
-      if (response?.error) {
-        return Toast.show({
-          type: "error",
-          text1: response?.error?.data?.message,
-        });
-      }
+      // if (response?.error) {
+      //   return Toast.show({
+      //     type: "error",
+      //     text1: response?.error?.data?.message,
+      //   });
+      // }
       Toast.show({
         type: "success",
         text1: response?.data?.message,
