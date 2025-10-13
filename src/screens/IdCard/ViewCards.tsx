@@ -184,12 +184,14 @@ const ViewCards = ({ navigation }) => {
               <Header font="semi_bold" size={16}>
                 Organization-Issued Cards
               </Header>
-              <AntDesign
+              <View></View>
+              {/*<AntDesign
+
                 name="pluscircle"
                 size={24}
                 color={colors.primary}
                 onPress={() => navigation.navigate("AddCard")}
-              />
+              />*/}
             </View>
 
             <TextPrimary

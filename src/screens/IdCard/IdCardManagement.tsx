@@ -33,7 +33,7 @@ const IdCardManagement = ({ navigation }: any) => {
         <View style={tw`flex-1 gap-10 mt-16`}>
           <CardAction
             icon={icons.add_card}
-            title="Add Card"
+            title="Digitize your card"
             text=" Go digital, create a digital version of your physical ID cards"
             sideIcon={images.green_side}
             onPress={() => navigation.navigate("AddCard")}
@@ -48,8 +48,8 @@ const IdCardManagement = ({ navigation }: any) => {
           />
           <CardAction
             icon={icons.double_card}
-            title="My Cards"
-            text=" See your cards from all your organisations"
+            title="Organization-issued cards"
+            text="View and manage cards from your groups"
             sideIcon={images.yellow_side}
             onPress={() => navigation.navigate("ViewCards")}
           />
