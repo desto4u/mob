@@ -42,7 +42,7 @@ const IdCardManagement = ({ navigation }: any) => {
           <CardAction
             icon={icons.double_card}
             title="Personal Cards"
-            text=" See your personal cards"
+            text="Manage your personal cards"
             sideIcon={images.yellow_side}
             onPress={() => navigation.navigate("ViewPersonalCards")}
           />
