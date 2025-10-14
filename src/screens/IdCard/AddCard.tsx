@@ -157,14 +157,19 @@ const AddCard = ({ navigation, route }: any) => {
           },
         });
       } else {
-        // Call createIdCard if selectedCard does not exist
-        result = await createIndividualIdCard({
+        if (!data["expiryDate"]?.trim()) {
+          data["expiryDate"] = null;
+        }
+        const card_details = {
           ...data,
           scanIDCard: {
             frontIdCard: imageUrl,
             backIdCard: imageUrlBack,
           },
-        });
+        };
+        // return console.log(card_details);
+        // Call createIdCard if selectedCard does not exist
+        result = await createIndividualIdCard(card_details);
       }
 
       // const result: any = await createIndividualIdCard({

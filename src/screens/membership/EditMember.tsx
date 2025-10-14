@@ -31,6 +31,7 @@ import { Dropdown } from "react-native-element-dropdown";
 import { useQuery } from "@tanstack/react-query";
 import { useSelector } from "react-redux";
 import { useGetUserQuery } from "../../state/features/services/users/user";
+import { AxiosError } from "axios";
 interface API_RESPONSE {
   code: number;
   message: string;
@@ -111,8 +112,8 @@ export default function EditMember({ navigation, route }: any) {
         title: "Request Sent",
         message: response?.data?.message,
       });
-    } catch (error: any) {
-      console.log(error);
+    } catch (error: AxiosError) {
+      console.log(error.response?.data?.message);
       Toast.show({
         type: "error",
         text1: error.response?.data?.message || "An error occurred",
