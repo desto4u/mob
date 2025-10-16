@@ -33,6 +33,7 @@ import BottomModals from "../../components/modals/BottomModals";
 import PrimaryButton from "../../components/buttons/PrimaryButtom";
 import Toast from "react-native-toast-message";
 import { newApi } from "../../state/newStates/flow";
+import BaseText from "../../components/BaseText";
 
 const ViewPersonalCardDetails = ({ navigation, route }: any) => {
   const cardId = route?.params?.cardId;
@@ -96,39 +97,44 @@ const ViewPersonalCardDetails = ({ navigation, route }: any) => {
     <>
       <PageContainer>
         <ScrollView
-          style={tw` `}
+          style={tw`flex-1`} // Added flex-1 for better layout
           refreshControl={
             <RefreshControl
               refreshing={refreshing || isFetching}
               onRefresh={onRefresh}
+              tintColor={colors.primary} // Added tint color for refresh indicator
             />
           }
         >
-          <View style={tw` flex-row justify-between`}>
+          <View style={tw`flex-row justify-between items-center relative z-10`}>
             <BackButton onPress={() => navigation.goBack()} />
-            <Header font="semi_bold" size={16}>
-              View Cards
+            <Header font="semi_bold" size={18} style={tw`text-white`}>
+              View Card
             </Header>
 
-            <MaterialCommunityIcons
-              name="dots-vertical"
-              size={24}
-              color="#C4C4C4"
+            <Pressable
               onPress={() => setDropdown(!dropdown)}
-            />
+              style={tw`p-2`} // Added padding for easier press
+            >
+              <MaterialCommunityIcons
+                name="dots-vertical"
+                size={24}
+                color="#C4C4C4"
+              />
+            </Pressable>
             {dropdown && (
               <View
-                style={tw`bg-[#3A3A3C] rounded-[10px] p-3 gap-3 w-[181px] absolute right-0 top-6 z-[999999]`}
+                style={tw`bg-[#3A3A3C] rounded-[10px] p-3 gap-3 w-[181px] absolute right-4 top-12 z-[999999] shadow-lg`} // Adjusted position and added shadow
               >
-                {/* <TextPrimary size={12} font="medium" style={tw`text-gray`}>
-                  Action{" "}
-                </TextPrimary> */}
-
                 <Pressable
-                  onPress={() => navigation.navigate("AddCard", { cardId })}
+                  onPress={() => {
+                    navigation.navigate("AddCard", { cardId });
+                    setDropdown(false); // Close dropdown after selection
+                  }}
+                  style={tw`py-2 `}
                 >
                   <TextPrimary
-                    size={11}
+                    size={13}
                     font="medium"
                     style={tw`text-[#EEEEEE]`}
                   >
@@ -140,9 +146,10 @@ const ViewPersonalCardDetails = ({ navigation, route }: any) => {
                     openModal();
                     setDropdown(false);
                   }}
+                  style={tw`py-2 `}
                 >
                   <TextPrimary
-                    size={11}
+                    size={13}
                     font="medium"
                     style={tw`text-[#EEEEEE]`}
                   >
@@ -153,32 +160,34 @@ const ViewPersonalCardDetails = ({ navigation, route }: any) => {
             )}
           </View>
           <TextPrimary
-            size={16}
+            size={18}
             font="semi_bold"
             color={colors.gray_light}
-            style={tw`mt-5`}
+            style={tw`mt-2 px-4`} // Increased font size and added horizontal padding
           >
-            {cardDetails?.issuingOrganization}
+            <BaseText style={tw`text-xl font-bold capitalize`}>
+              {cardDetails?.issuingOrganization}
+            </BaseText>
           </TextPrimary>
 
-          <Image
-            source={{ uri: cardDetails?.scanIDCard.frontIdCard }}
-            resizeMode="contain"
-            style={tw`w-full h-[250px] mt-9`}
-          />
-          <Image
-            source={{ uri: cardDetails?.scanIDCard.backIdCard }}
-            resizeMode="contain"
-            style={tw`w-full h-[250px] mt-4`}
-          />
+          <View style={tw`mt-8 items-center`}>
+            {cardDetails?.scanIDCard.frontIdCard && (
+              <Image
+                source={{ uri: cardDetails?.scanIDCard.frontIdCard }}
+                resizeMode="cover" // Changed to cover for better image display
+                style={tw`w-[90%] h-[200px] rounded-lg shadow-md`} // Added rounded corners and shadow
+              />
+            )}
+            {cardDetails?.scanIDCard.backIdCard && (
+              <Image
+                source={{ uri: cardDetails?.scanIDCard.backIdCard }}
+                resizeMode="cover" // Changed to cover
+                style={tw`w-[90%] h-[200px] mt-4 rounded-lg shadow-md`} // Added rounded corners and shadow
+              />
+            )}
+          </View>
 
-          <View style={tw`mt-5 pb-10`}>
-            {/* <CardTag
-                color={colors.primary}
-                bgColor="#A324F21A"
-                text="Created by Organization"
-              /> */}
-
+          <View style={tw`mt-8 pb-10 px-4`}>
             <View style={tw`mt-2 gap-4`}>
               <ListItem
                 icon={icons.card_number}
@@ -203,40 +212,68 @@ const ViewPersonalCardDetails = ({ navigation, route }: any) => {
               <ListItem
                 icon={icons.event}
                 itemKey="Expiry Date"
-                value={formatDate(cardDetails?.expiryDate)}
+                value={
+                  cardDetails?.expiryDate
+                    ? formatDate(cardDetails?.expiryDate)
+                    : "No Expiry Date"
+                }
               />
               <ListItem
                 icon={icons.verify}
                 valueColor={
-                  new Date(cardDetails?.expiryDate) > new Date()
-                    ? "#4CD964"
-                    : "#F74D1B"
+                  cardDetails?.expiryDate
+                    ? new Date(cardDetails?.expiryDate) > new Date()
+                      ? "#4CD964"
+                      : "#F74D1B"
+                    : "#4CD964"
                 }
                 itemKey="Status"
                 value={
-                  new Date(cardDetails?.expiryDate) > new Date()
-                    ? "Active"
-                    : "Expired"
+                  cardDetails?.expiryDate
+                    ? new Date(cardDetails?.expiryDate) > new Date()
+                      ? "Active"
+                      : "Expired"
+                    : "Active"
                 }
               />
             </View>
           </View>
         </ScrollView>
       </PageContainer>
-      <BottomModals open={modal} handleClose={closeModal} snapPoints={["50"]}>
-        <View style={tw`p-5`}>
-          {/* <View style={tw`h-[2px] w-[80px] rounded-sm bg-[#606060] mx-auto`} /> */}
-          <TextPrimary font="medium" size={15} style={tw`text-center mt-5`}>
-            Delete Card
+      <BottomModals open={modal} handleClose={closeModal} snapPoints={["40%"]}>
+        {" "}
+        {/* Adjusted snapPoints for a smaller modal */}
+        <View style={tw`p-6 items-center`}>
+          {" "}
+          {/* Increased padding and centered content */}
+          <MaterialCommunityIcons
+            name="alert-circle-outline"
+            size={60}
+            color="#F74D1B"
+            style={tw`mb-4`}
+          />
+          <TextPrimary font="semi_bold" size={18} style={tw`text-center mb-2`}>
+            Delete Card?
           </TextPrimary>
-          <View style={tw`gap-5 mt-6`}>
-            <View style={tw`flex-col gap-2 items-center`}>
-              <TextPrimary>Note: This action cannot be reversed⚠️</TextPrimary>
-            </View>
-
+          <TextPrimary
+            font="regular"
+            size={14}
+            style={tw`text-center text-gray-400 mb-6`}
+          >
+            Are you sure you want to delete this card? This action cannot be
+            reversed.
+          </TextPrimary>
+          <View style={tw`flex-row w-full gap-3`}>
             <PrimaryButton
-              size={13}
-              style={tw``}
+              size={14}
+              style={tw`flex-1 bg-gray-600`} // Styled as a secondary button
+              onPress={closeModal}
+            >
+              Cancel
+            </PrimaryButton>
+            <PrimaryButton
+              size={14}
+              style={tw`flex-1`}
               loading={isDeleting}
               onPress={handleSubmit}
               color="#F74D1B"

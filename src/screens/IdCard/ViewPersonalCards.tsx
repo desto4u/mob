@@ -102,7 +102,7 @@ const ViewPersonalCards = ({ navigation }) => {
     // Apply status filters
     if (filterData.active || filterData.inActive) {
       filtered = filtered.filter((item: IndividualCard) => {
-        const isActive = new Date(item.expiryDate) > new Date();
+        const isActive =item.expiryDate ? new Date(item.expiryDate) > new Date() :false;
         return (
           (filterData.active && isActive) || (filterData.inActive && !isActive)
         );
@@ -216,7 +216,8 @@ const ViewPersonalCards = ({ navigation }) => {
             renderItem={({ item }) => {
               // const imageData = JSON.parse(item?.scanIDCard);
               console.log("card id", item?.scanIDCard);
-              const isActive = new Date(item.expiryDate) > new Date();
+              const isActive = item.expiryDate ? new Date(item.expiryDate) > new Date() : true;
+              // const isActive = true;
               return (
                 <Pressable
                   onPress={() =>
@@ -242,6 +243,7 @@ const ViewPersonalCards = ({ navigation }) => {
                         <BaseText
                           style={tw`capitalize w-full  mb-2 text-xl font-bold`}
                         >
+                          {/*{item.expiryDate}*/}
                           {item?.issuingOrganization}
                         </BaseText>
                         {/*</Header>*/}

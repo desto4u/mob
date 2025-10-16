@@ -33,10 +33,12 @@ import Toast from "react-native-toast-message";
 import PageLoader from "../../components/Loader";
 import { Dropdown } from "react-native-element-dropdown";
 import { useQuery } from "@tanstack/react-query";
+import { useTokenStore } from "../../state/newStates/auth";
 
 const OrganizationDetails = ({ navigation, route }: any) => {
   const { data: org } = route.params;
   const [designation, setDesignation] = useState();
+  const user = useTokenStore((state) => state.userObject?.data.email);
   const [organizationEmail, setOrganizationEmail] = useState(org.email);
 
   const { data, isLoading: isGettingDetails } = useGetOrganizationQuery(
@@ -153,8 +155,8 @@ const OrganizationDetails = ({ navigation, route }: any) => {
               />
               <InputTextWithLabel
                 label="Organization Email"
-                value={org.email}
-                editable={false}
+                value={user}
+                // editable={false}
               />
             </View>
             <View style={tw`mt-10`}>
