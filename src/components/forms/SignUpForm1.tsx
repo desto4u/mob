@@ -40,7 +40,10 @@ const SignUpForm1 = ({ navigation }: any) => {
     setShowPicker(!showPicker);
   };
 
-  const handleConfirm = (selectedDate, onChange) => {
+  const handleConfirm = (
+    selectedDate: Date,
+    onChange: (date: string) => void,
+  ) => {
     const formattedDate = moment(selectedDate).format("YYYY-MM-DD");
     setDate(selectedDate);
     onChange(formattedDate); // Update the value in the Controller
@@ -211,7 +214,15 @@ const SignUpForm1 = ({ navigation }: any) => {
 
         <Controller
           control={control}
-          rules={{ required: "Password is required" }}
+          rules={{
+            required: "Password is required",
+            pattern: {
+              value:
+                /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+              message:
+                "Password must contain at least 8 characters, including uppercase, lowercase, number, and special character",
+            },
+          }}
           render={({ field: { onChange, value } }) => (
             <InputText
               icon={icons.padlock}

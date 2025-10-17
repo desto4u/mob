@@ -33,19 +33,20 @@ const SignUpForm3 = ({ navigation, formData }: any) => {
   } = methods;
 
   const onSubmit = async (data: any) => {
-    console.log(formData)
+    console.log(formData);
     if (!isChecked) {
       alert("You must agree to the terms and conditions");
       return;
     }
-  
+
     const payload = {
       ...data,
       ...formData,
-      dateOfBirth: formData.dateOfBirth ==="Invalid date" ? "" : formData.dateOfBirth,
+      dateOfBirth:
+        formData.dateOfBirth === "Invalid date" ? "" : formData.dateOfBirth,
       acceptedTnC: isChecked,
     };
-    console.log("dob",payload.dateOfBirth)
+    console.log("dob", payload.dateOfBirth);
     navigation.navigate("UploadLogoScreen", { payload });
   };
 
@@ -161,7 +162,19 @@ const SignUpForm3 = ({ navigation, formData }: any) => {
           <Controller
             control={control}
             name="password"
-            rules={{ required: "Password is required" }}
+            rules={{
+              required: "Password is required",
+              minLength: {
+                value: 8,
+                message: "Password must be at least 8 characters long",
+              },
+              pattern: {
+                value:
+                  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).*$/,
+                message:
+                  "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character",
+              },
+            }}
             render={({ field: { onChange, value }, fieldState: { error } }) => (
               <InputText
                 icon={icons.padlock}

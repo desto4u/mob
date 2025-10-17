@@ -81,8 +81,8 @@ const SelectAcctType = ({ navigation }) => {
             />
           </Pressable>
         </View>
-        <View className="items-center mt-6">
-          <BaseText style={tw`text-base`}>
+        <View className="items-center mt-6 justify-center ">
+          <BaseText style={tw`text-base text-center`}>
             Already have an account ? Proceed to{" "}
             <Text
               onPress={() => navigation.navigate("SignIn")}
