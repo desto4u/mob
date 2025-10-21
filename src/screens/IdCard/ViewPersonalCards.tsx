@@ -295,7 +295,7 @@ const ViewPersonalCards = ({ navigation }) => {
                           Expires
                         </TextPrimary>
                         <TextPrimary size={12} font="medium" style={tw`mt-1`}>
-                          {new Date(item?.expiryDate).toLocaleDateString()}
+                          {item?.expiryDate.trim() ? new Date(item?.expiryDate).toLocaleDateString() : "N/A"}
                         </TextPrimary>
                       </View>
                     </View>
