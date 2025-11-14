@@ -282,7 +282,7 @@ const AddCard = ({ navigation, route }: any) => {
                   <>
                     <ChooseDate
                       minimumDate={new Date()}
-                      label="Expiry Date"
+                      label="Expiry Date (Optional)"
                       placeholder="Choose expiry date"
                       value={value}
                       errorMessage={errors?.expiryDate?.message}
