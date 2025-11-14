@@ -102,7 +102,9 @@ const ViewPersonalCards = ({ navigation }) => {
     // Apply status filters
     if (filterData.active || filterData.inActive) {
       filtered = filtered.filter((item: IndividualCard) => {
-        const isActive =item.expiryDate ? new Date(item.expiryDate) > new Date() :false;
+        const isActive = item.expiryDate
+          ? new Date(item.expiryDate) > new Date()
+          : false;
         return (
           (filterData.active && isActive) || (filterData.inActive && !isActive)
         );
@@ -216,7 +218,9 @@ const ViewPersonalCards = ({ navigation }) => {
             renderItem={({ item }) => {
               // const imageData = JSON.parse(item?.scanIDCard);
               console.log("card id", item?.scanIDCard);
-              const isActive = item.expiryDate ? new Date(item.expiryDate) > new Date() : true;
+              const isActive = item.expiryDate
+                ? new Date(item.expiryDate) > new Date()
+                : true;
               // const isActive = true;
               return (
                 <Pressable
@@ -262,7 +266,7 @@ const ViewPersonalCards = ({ navigation }) => {
                             >
                               {isActive ? "ACTIVE" : "EXPIRED"}
                             </BaseText>
-                          </View>>
+                          </View>
                         </View>
                       </View>
                     </View>
@@ -295,7 +299,9 @@ const ViewPersonalCards = ({ navigation }) => {
                           Expires
                         </TextPrimary>
                         <TextPrimary size={12} font="medium" style={tw`mt-1`}>
-                          {item?.expiryDate.trim() ? new Date(item?.expiryDate).toLocaleDateString() : "N/A"}
+                          {item?.expiryDate?.trim()
+                            ? new Date(item?.expiryDate).toLocaleDateString()
+                            : "N/A"}
                         </TextPrimary>
                       </View>
                     </View>
